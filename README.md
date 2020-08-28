@@ -8,6 +8,4 @@ So over the next week or so I will add a lot of information and finally a rudime
 
 I hope you will gain something from it at least
 
-[Basics: Part 1](/part1.md)
-
-Logical operations
+[Start here](/intro.md)
