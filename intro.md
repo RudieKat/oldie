@@ -10,5 +10,6 @@
 <p>I hope you enjoy it. I did.</p>
 <ol>
 <li><a href="/oldie/part1.html">A new hope</a></li>
+<li><a href="/oldie/logical1.html">It’s a trap</a></li>
 </ol>
 
