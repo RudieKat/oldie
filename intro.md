@@ -11,5 +11,16 @@
 <ol>
 <li><a href="/oldie/part1.html">A new hope</a></li>
 <li><a href="/oldie/logical1.html">It’s a trap</a></li>
+<li>Constants and change</li>
+<li>Equality now</li>
+<li>Logically speaking</li>
+<li>Back to math</li>
+<li>Bits and bobs</li>
+<li>Stack them</li>
+<li>Stacked so high</li>
+<li>Serial comms online</li>
+<li>Control characters and you</li>
+<li>Odds and ends</li>
+<li>What does it all mean</li>
 </ol>
 
