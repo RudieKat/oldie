@@ -7,3 +7,5 @@ But do could you build a stack from scratch? Do you know what happens in the mos
 So over the next week or so I will add a lot of information and finally a rudimentary IDE for you to play around with if you want. There is an art to understanding how to work in a restrictive environment that is useful even under normal circumstances.
 
 I hope you will gain something from it at least
+
+[Part 1](/part1.md)
