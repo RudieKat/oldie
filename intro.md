@@ -9,6 +9,6 @@
 <p>So a while back I decided to sit down and design this absolutely minimal fake CPU with a very small instruction set as a teaching tool. It has a sort of assembly like language associated with it that is linked and runs in an emulator of sorts. Eventually it will turn up here but we have some way to go first. And since this isn’t just for software developers I warn you there will be some duh obvious moments. But relax, it will get better.</p>
 <p>I hope you enjoy it. I did.</p>
 <ol>
-<li><a href="/part1.md">A new hope</a></li>
+<li><a href="/oldie/part1.html">A new hope</a></li>
 </ol>
 
