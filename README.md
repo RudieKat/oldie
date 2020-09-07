@@ -8,4 +8,6 @@ So over the next week or so I will add a lot of information and finally a rudime
 
 I hope you will gain something from it at least
 
-[Start here](/intro.md)
+[Start here](/oldie/intro.html)
+
+[Emulox](/oldie/emu.html)
