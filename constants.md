@@ -32,6 +32,5 @@ This seems like an awfully complicated way to do something that intuitively you 
   .op_sav 0x8000
   .op_jcz 0xC000
 </code></pre>
-<p>Many of these will make little sense until later but a few are important early on. The ones that are called op_nand etc are the opcodes. We can use them to write something very important which is self modifying code. The .opmask and .addmask are involved in similar operations. And soon enoough you will become familiar with the importance of neg_one.<br>
-So there are our constants to begin with. Now. let’s move on to our next little chapter.</p>
+<p>Many of these will make little sense until later but a few are important early on. The ones that are called <code>op_nand</code> etc are the opcodes. We can use them to write something very important which is self modifying code. The .<code>opmask</code> and .<code>addmask</code> are involved in similar operations. And soon enough you will become familiar with the importance of neg_one. So there are our constants to begin with. Now. let’s move on to our next little chapter where we go back to <a href="/oldie/arithmetic.html">math class.</a></p>
 
