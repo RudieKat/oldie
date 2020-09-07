@@ -148,7 +148,4 @@ A loop is very common structure when programming. You might loop WHILE some cond
 </code></pre>
 <p>And now it’s time for you to think. What happens here and will it provide the correct answer.</p>
 <p>I will tell you when we start twiddling our <a href="/oldie/bitops.html">bits</a></p>
-<p>Substraction<br>
-Multiplication<br>
-Division</p>
 
