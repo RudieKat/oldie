@@ -15,7 +15,7 @@
 <ol>
 <li><a href="/oldie/part1.html">A new hope</a></li>
 <li><a href="/oldie/logical1.html">It’s a trap</a></li>
-<li>Constants and change</li>
+<li><a href="/oldie/constants.html">Constants and candy</a></li>
 <li>Equality now</li>
 <li>Logically speaking</li>
 <li>Back to math</li>
