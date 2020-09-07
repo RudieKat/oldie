@@ -1,0 +1,505 @@
+<html>
+    <head>
+        <script src="codemirror/lib/codemirror.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="codemirror/theme/darcula.css">
+        <link rel="stylesheet" href="/css/ultra.css">
+        <!--<script src="codemirror/mode/simple/simple.js"></script>
+        
+        <script src="codemirror/mode/z80/z80.js"></script>!-->
+        <script src="/js/file.mjs" type="module"></script>
+        
+        <script src="codemirror/mode/ultra/ultra.js"></script>
+        <script src="codemirror/mode/javascript/javascript.js"></script>
+        <script src="/js/cpu/common.mjs" type="module"></script>
+        <script src="/js/bus/io.mjs" type="module"></script>
+        
+        <script src="/js/cpu/index.mjs" type="module"></script>
+        <script src="/js/parser.mjs" type="module"></script>
+        <script src="/js/device/vt52.mjs" type="module"></script>
+        <script src="/js/device/rt11.mjs" type="module"></script>
+        <script src="/js/device/keyboard.mjs" type="module"></script>
+    <style>
+        
+    </style>
+    <script type="module">
+        import {FileManager,fm,fs} from '/js/file.mjs';
+        import {IOStream, IOBus, DevNullBus, devnull} from '/js/bus/io.mjs';
+        import {CPU,cpu,LineAware,Memory,Operation,Flag,Register} from '/js/cpu/index.mjs';
+        import {Hexer8,Hexer16} from '/js/cpu/common.mjs';
+        import {SyntaxError,parse} from '/js/parser.mjs';
+        window.fs = fs;
+        import {RS232Bus} from '/js/device/rs232.mjs';
+        import {TTYKeyboard} from '/js/device/keyboard.mjs';
+        import {VT52} from '/js/device/vt52.mjs';
+        import {RT11} from '/js/device/rt11.mjs';
+        let editor = null;
+        let parseOn = true;
+        let currentFile = null;
+        window.loadTextData = function(type, filenames,cb) {
+                if (typeof(filenames) === 'string') {
+                    filenames = [filenames];
+                }
+                filenames.forEach(f => {
+                    const path = "/data/" + type + "/" + f;
+                    const req = new XMLHttpRequest();
+                    req.open("GET", path, true);
+                    req.onreadystatechange = () => {
+                        if (req.readyState == XMLHttpRequest.DONE){
+                            cb(req.responseText);
+                        }
+                    }; 
+                    req.send();
+                });
+            }
+        window.loadFile = (id) => {
+            let pv = parseOn;
+            parseOn = false;
+            window.editor.setValue(localStorage.getItem(id));
+            currentFile = id;
+            parseOn = pv;
+            if (parseOn) {
+                window.reset();
+            }
+        };
+        window.deleteFile = (id) => {
+            fm.remove(id);
+            document.getElementById(id).parentNode.removeChild(document.getElementById(id));
+            currentFile = null;
+            window.editor.setValue(document.getElementById("code").value);
+        }
+        window.persist = (nf) => {
+            if (currentFile && !nf) {
+                fm.update(currentFile,window.editor.getValue());
+            } else {
+                let name = prompt("Filename","");
+                if (name && name.trim().length > 4) {
+                    currentFile = fm.addFile(name,window.editor.getValue());
+                    window.refreshFiles();
+                } else if (name.trim().length>0) {
+                    alert("No filename supplied");
+                }
+            }
+        }
+        window.new_file = () => {
+            window.editor.setValue(code.value);
+        }
+        window.lineNumberFormatter = (line) => {
+            if (!window.editor) {
+                return Hexer8(line);
+            } else if (LineAware.lines.length == 0) {
+                try {
+                    window.reset();
+                } catch (err) {
+                    //console.log(err);
+                }
+            }
+            let l = LineAware.memoryAddress(line);
+            if (l >= 0) {
+                try {
+                    return Hexer16(l) + " " + Hexer16(Memory.read(l));
+                } catch (e) {
+                    return "ER R OR: " + l;
+                }
+            }
+            return "";
+        }
+
+        window.reset = () => {
+            cpu.halt();
+            CPU.reset();
+            window.resetMem();
+            let c = window.editor.getValue().trim();
+            try {
+                parse(c);
+                window.editor.setValue(c);
+            } catch (err) {
+                console.log(err);
+            }
+            
+        }
+        window.exec = (cycles) => {
+            window.resetMem();
+            
+            cpu.process();
+            //parse(window.editor.getValue().trim());
+            if (cycles) {
+                cpu.execSlow(cycles);
+            } else {
+                cpu.exec();
+            }
+        }
+        window.step = () => {
+            cpu.step();
+            let memPos = 0;
+            let next = cpu.instruction;
+            let g = window.editor.getGutterElement();
+            
+            for (let i = 0; i < window.editor.lineCount();i++) {
+                window.editor.removeLineClass(i,"wrap","ultralight");
+                window.editor.removeLineClass(i,"gutter","ultralight");
+                
+                memPos = LineAware.memoryAddress(i);    
+                if (memPos == next) {
+                    window.editor.addLineClass(i,"wrap","ultralight");
+                    window.editor.addLineClass(i,"gutter","ultralight");
+                }
+                
+            }
+            let lines = Array.from(document.querySelectorAll(".CodeMirror-linenumber")).filter(ll => ll.innerText.length>8);
+            lines.forEach(ll => {
+                let addr = parseInt(ll.innerText.substring(2,4),16);
+                ll.innerText = Hexer16(addr) + " " + Hexer16(Memory.read(addr));
+            });
+            
+            document.getElementById("register-r").innerText = "R: " + Hexer16(Register.R.value);
+            
+        }
+        window.init = () => {
+            let code = document.getElementById("code");
+            let ram = document.getElementById("ram");
+            let files = document.getElementById("file");
+            let ramOut = [];
+            for (let i = 0; i < 1024;i++) {
+                let r = document.createElement("tr");
+                let tda = document.createElement("td");
+                let tdb = document.createElement("td");
+                tda.innerText = Hexer16(i);
+                tdb.innerText = Hexer16(0);
+                r.appendChild(tda);
+                r.appendChild(tdb);
+                ram.appendChild(r);
+                ramOut.push(r);
+                ramOut.push(tdb);
+            }
+            window.refreshFiles = () => {
+                let fileList = fm.list;
+                files.innerHTML = "";
+                for (let i = 0; i < fileList.length;i++) {
+                    let r = document.createElement("tr");
+                    let tda = document.createElement("td");
+                    let tdb = document.createElement("td");
+                    let tdc = document.createElement("td");
+                    tda.innerText = fileList[i].name;
+                    tdb.innerText = fileList[i].updated;
+                    tdc.innerHTML = "<a href='javascript:loadFile(\"" + fileList[i].id + "\")'>Load</a><br>" +
+                                    "<a href='javascript:deleteFile(\"" + fileList[i].id + "\")'>Delete</a>";
+                    r.id = fileList[i].id;
+                    r.appendChild(tda);
+                    r.appendChild(tdb);
+                    r.appendChild(tdc);
+                    files.appendChild(r);
+                }
+            };
+            window.refreshFiles();
+            window.resetMem = () => {
+                for(let i = 0; i < ramOut.length;i+=2) {
+                    //ramOut[i].style.visibility = 'collapse';
+                    ramOut[i+1].innerText = Hexer16(Memory.read(i/2));
+                }
+            }
+            window.readMem = () => {
+                for (let i = 0; i < ramOut.length;i+=2) {
+                    ramOut[i+1].innerText = Hexer16(Memory.read(i/2));
+                }
+            }
+            window.toggleParse = () => {parseOn=!parseOn;}
+            Memory._mem.onchange = (type,latest)=> {
+                if (latest.addr < ramOut.length) {
+                    let i = latest.addr*2;
+                    ramOut[i+1].innerText = Hexer16(latest.datum);
+                    ramOut[i].style.visibility='visible'
+                }
+            };
+            let vt = new VT52(9600,2);
+            let keyboard = new TTYKeyboard();
+            let keyboard_input = document.getElementById("keyboard-input");
+            let cmd = false;
+            keyboard_input.onkeyup = (ev) => {
+                if (!cpu.running) {
+                    return;
+                }
+                if (ev.keyCode == 0x1B || ev.which == 0x1B) {
+                    cmd = true;
+                    keyboard_input.value = "ESC-";
+                } else {
+                    if (ev.key.length == 1) {
+                        let b = ev.key.charCodeAt(0);
+                        if (b <128) {
+                            if (cmd) {
+                                keyboard_input.value ="ESC-" + ev.key;
+                                keyboard.capture.write(0x1b);
+                            } else {
+                                keyboard_input.value = ev.key;
+                            }
+                            keyboard.capture.write(b);
+                            cmd = false;
+                        }
+                    } else {
+                        if (cmd) {
+                            cmd = false;
+                        } else if (ev.which < 128 ) {
+                            keyboard_input.value = ev.key;
+                            keyboard.capture.write(ev.which);
+                        }
+                        
+                    }
+                }
+            };
+            vt.update_at_interval(5); 
+            let vtb = vt.bus;
+            window.screen_toggle = () => {
+                if (vt.active) {
+                    vt.end();
+                    Register.OUT.connect(devnull);
+                    document.getElementById("screen-toggle").innerHTML="<strong>Screen ON</strong>";
+                } else {
+                    Register.OUT.connect(vtb);
+                    vt.update_at_interval(5); 
+                    document.getElementById("screen-toggle").innerHTML="<strong>Screen OFF</strong>";
+                }
+                
+            }
+            //let vt_bus = vt.bus;
+            //Register.IN.connect(vt_bus);
+            Register.OUT.connect(vtb);
+            let vt_out = document.getElementById("terminal");
+            let block = '\u2588';
+            let blink = 0;
+            /*setTimeout(() => {
+                window.loadTextData("txt", "ui.txt", (txt) => {
+                    txt = txt.split("\n").map(l => l.split(""));
+                    let code = window.editor.getValue().trim().split("\n").map(l => l.split(""));
+                    for (let i = 0; i < code.length && i < 22;i++) {
+                        let ln = window.lineNumberFormatter(i);
+                        txt[i+1].splice(1,ln.length,...ln.split(""));
+                        for (let j = 0; j< code[i].length;j++) {
+                            try {
+                                txt[i+2][j+12] = code[i][j];
+                            } catch (e) {
+                                console.log(i + "::" + j);
+                            }
+                        }
+                    }
+                    txt.forEach(l => vt.rcv_bits(vt.chars_to_bits(l.join("") + "\n")));
+                    let th = setInterval(window.update_screen,100);
+                })},1000);*/
+            window.update_screen = () => {
+            
+                vt_out.value = vt.visible_rows;
+                if (blink >=0) {
+                    let pos = vt.cursor_pos;
+                    vt_out.value = vt_out.value.substring(0,pos) + block + vt_out.value.substring(pos+1,20000);
+                }
+                blink++;
+                if (blink == 5) {
+                    blink = -5;
+                }
+            };    
+            let s_u = setInterval(window.update_screen,100);
+            
+            window.editor = CodeMirror.fromTextArea(document.getElementById("code"),{
+                theme:"darcula",
+                //mode:"ultra",
+                lineNumbers:true,
+                firstLineNumber:0,
+                lineNumberFormatter:window.lineNumberFormatter,
+                gutters: ["CodeMirror-linenumbers","breakpoints","spacer"]
+            });
+            let panel = document.querySelector(".CodeMirror-buttonsPanel");
+            panel.appendChild(document.createElement("br"));
+            let cc = createView("reporter-cpu");
+            let r = createView("register-r");
+            let i = createView("register-i");
+            let a = createView("register-a");
+            let io_in = createView("register-ioin");
+            let io_out = createView("register-ioout");
+            cpu.onchange = (type,value)=> {
+                value = ""+value;
+                cc.innerText = value;
+                /*if (cpu.running) {
+                    let len = 0x4B-value.length;
+                    vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0x3,len]));
+                    vt.rcv_bits(vt.chars_to_bits(""+value));
+                }*/
+            };
+            //io_in.style.content = "I/O IN: "
+            //io_out.style.content = "I/O OUT: "
+            let fc = createView("flag-c");
+            let regListener = (type,v) => {
+                v = Hexer16(v);
+                switch(type) {
+                    case Register.R_T:
+                        r.innerText = v;
+                        // 
+                        /*if (cpu.running) {
+                            vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0x6,0x47]));
+                            vt.rcv_bits(vt.chars_to_bits(v));
+                        }*/
+                        break;
+                    case Register.I_T:
+                        i.innerText = v;
+                        /*if (cpu.running) {
+                            vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0x8,0x47]));
+                            vt.rcv_bits(vt.chars_to_bits(v));
+                        }*/
+                        break;
+                    case Register.A_T:
+                        a.innerText = v;
+                        /*if (cpu.running) {
+                            vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0xA,0x47]));
+                            vt.rcv_bits(vt.chars_to_bits(v));
+                        }*/
+                        break;
+                    case Register.IN_T:
+                        io_in.innerText = v;
+                        /*if (cpu.running) {
+                            vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0xF,0x47]));
+                            vt.rcv_bits(vt.chars_to_bits(v));
+                        }*/
+                        break;
+                    case Register.OUT_T:
+                        let existing = io_out.innerText.split(",").map(u => u.trim()).filter(u => u.length > 0);
+                        if (existing.length == 0 || existing[0]!== v) {
+                            existing.unshift(v);
+                        }
+                        io_out.innerText = existing.slice(0,5).join(",");
+                        /*if (cpu.running) {
+                            vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0x11,0x47]));
+                            vt.rcv_bits(vt.chars_to_bits(v));
+                        }*/
+                        break;
+                }
+            }
+            Register.R.onchange = regListener;
+            Register.I.onchange = regListener;
+            Register.A.onchange = regListener;
+            Register.IN.onchange = regListener;
+            Register.OUT.onchange = regListener;
+            Flag.C.onchange = (flagType, value) => {
+                fc.innerText = "C: " + value + " [" + Flag.C.f + "]";
+                /*if (cpu.running) {
+                    value = value==1 || value;
+                    vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0xC,0x47]));
+                    vt.rcv_bits(vt.chars_to_bits(value?"TRUE":"FALS"));
+                }*/
+            }
+            window.editor.on("gutterClick", function(cm, n) {
+                console.log(n);
+                var info = cm.lineInfo(n);
+                cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
+            });
+            let last = null;
+            window.editor.on('change', () => {
+                
+            });
+            window.editor.on("changes", () => {
+                localStorage.setItem("_asm",document.getElementById("code").value);
+                if (parseOn) {
+                    CPU.reset();
+                    try {
+                        parse(window.editor.getValue().trim());
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+            });
+            window.editor.setSize(640,720);
+            
+            
+        }
+        function createView(id) {
+            let panel = document.querySelector(".CodeMirror-buttonsPanel");
+            let r = document.createElement("span");
+            r.id = id;
+            r.className = "CodeMirror-reporter";
+            let regname =  id.split("-")[1].toUpperCase() + ": ";
+            if (regname.indexOf("IO") == 0) {
+                regname = "I/O " + regname.substring(2);
+            } else if (regname.indexOf("CPU") == 0) {
+                regname = "Cycle: ";
+            }
+            r.setAttribute("regname",regname);
+            panel.appendChild(r);
+            return r;
+        }
+        function makeMarker() {
+            var marker = document.createElement("div");
+            marker.style.color = "#822";
+            marker.innerHTML = "●";
+            return marker;
+        }
+        
+    </script>
+    </head>
+    <body onload="init()">
+        <div id='cm-buttons' class="CodeMirror-buttonsPanel">
+            <button onclick="exec()"><strong>Run</strong></button>
+            <button onclick="exec(parseInt(document.getElementById('cycle-counter').value))"><strong>Run slow</strong></button>
+            <button onclick="reset()"><strong>Reset CPU</strong></button>
+            <button onclick="step()"><strong>Step</strong></button>
+            <button onclick="toggleParse()"><strong>Toggle parse</strong></button>
+            <button onclick="resetMem()"><strong>Reset RAM</strong></button>
+            <button onclick="persist()"><strong>Save</strong></button>
+            <button onclick="new_file()"><strong>New File</strong></button>
+            <button id='screen-toggle' onclick="screen_toggle()"><strong>Screen OFF</strong></button>
+            <input type="number" value="10" id="cycle-counter"/>
+            <input type="text" autocomplete="off" value="" id="keyboard-input"/>
+        </div>
+        <table>
+
+        <tr>
+            <td>
+        <textarea id="code">
+; Unmutable
+.const
+    .one 1
+    .zero 0
+    .max 0xFFFF
+    .neg_one 0xFFFE
+    .opmask 0xC000
+    .addmask 0x3FFF
+    .op_nand 0
+    .op_add 0x4000
+    .op_sav 0x8000
+    .op_jcz 0xC000
+    .reserve_mutable 0x20
+; Mutable variables
+.data
+    .tmp 0x0
+; MAIN
+main:
+    add tmp
+    add one
+    sav tmp
+    jcz main
+end:
+; end
+        </textarea>
+        </td>
+        <th>
+            <div class="wrap ram">
+                <table>
+                    <thead>
+                        <tr><th>Address</th><th>Value</th></tr>
+                    </thead>
+                    <tbody id="ram" style="font-size:16px;"></tbody>
+                </table>
+            </div>
+        </td>
+        <td>
+            <div class="wrap file">
+                <textarea id='terminal' style='resize:none;' readonly cols="80" rows="24" class='screen'></textarea>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Filename</th><th>Updated</th><th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="file" style="font-size:16px;"></tbody>
+                </table>
+            </div>
+        </td>
+    </body>
+</html>

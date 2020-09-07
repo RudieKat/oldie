@@ -1,0 +1,125 @@
+body {
+    background-color: black;
+}
+.file-wrap {
+
+}
+#keyboard-input::before {
+    content:"BUFFER: ";
+}
+.wrap.file > table {
+    width:100%;
+}
+.wrap {
+    
+    margin-top:0px;
+    height:720px;
+    overflow-y: scroll;
+    
+    color:#FFF;
+    color: #A9B7C6;
+    background-color:#313335;
+    background-color:#212225;
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-variant-ligatures: none;
+}
+.wrap > table>tbody>tr > td > a:link {
+    color:white;
+}
+.wrap > table {
+    color: #A9B7C6;
+    background-color:#313335;
+    
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+}
+.wrap>table>thead {
+    background-color:#212225;
+}
+.wrap>table>thead>tr>th {
+    padding-top:5px;
+    padding-bottom:5px;
+}
+.wrap>table>*>tr>* {
+    padding-left:20px;
+    padding-right:20px;
+}
+.ram>table>tbody>tr:nth-child(2n-1) {
+    background-color:#717775;
+    color: #000000;
+}
+.breakpoints {
+    background-color:#212225;
+    width:30px;
+}
+.spacer {
+    width:20px;
+    background-color:#2B2B2B;
+}
+.ultralight {
+    background-color: #A9B7C6;
+    color:#313335;
+}
+.screen {
+    font-family: VT323, monospace;
+    font-size:20px;
+    font-variant-ligatures: none;
+    background-color: #282828;
+    background-color: black;
+    background-image: radial-gradient(
+        rgba(0, 40, 0, 0.75), black 120%
+    );
+    color: #66ff66;
+    color:#A9B7C6;
+    /*height:24em;
+    width:33em;*/
+    line-height:120%;
+    border:2px solid #121212;
+    border-radius: 5px;
+}
+screen::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(black, 0.15),
+        rgba(black, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+}
+.CodeMirror-buttonsPanel {
+    margin-bottom:-6px;
+    height: 80px;
+    float:left;
+    width:auto;
+    padding-left:10px;
+    padding-top:10px;
+}
+
+.CodeMirror-buttonsPanel button {
+    padding: .3em;
+    width: 7.3em;
+    margin-right: .5em;
+    text-align: center;
+    margin-bottom:20px;
+}
+.CodeMirror-reporter {
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-variant-ligatures: none;
+    color: #A9B7C6;
+    padding:4px;
+    padding-left:10px;
+    padding-right:10px;
+    margin-right:10px;
+    
+    border:1px solid #FFF;
+    background-color:#313335;
+    border-radius: 5px;
+}
+.CodeMirror-reporter::before {
+    content:attr(regname);
+}

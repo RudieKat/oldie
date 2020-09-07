@@ -1,0 +1,8 @@
+{
+    "format":"es",
+    "input":"./js/grammar.pegjs",
+    "output":"./js/parser.mjs",
+    "dependencies":{
+        "{Value,Label,LineAware,Operation,cpu,Constant,Symbol,SymbolBuffer,Symbols}":"./cpu/index.mjs"
+    }
+}

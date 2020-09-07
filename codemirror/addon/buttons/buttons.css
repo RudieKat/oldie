@@ -1,0 +1,25 @@
+.CodeMirror-buttonsPanel {
+    margin-bottom: .5em;
+    height: 80px;
+}
+
+.CodeMirror-buttonsPanel button {
+    padding: .3em;
+    width: 7.3em;
+    margin-right: .5em;
+    text-align: center;
+    margin-bottom:14px;
+}
+.CodeMirror-reporter {
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-variant-ligatures: none;
+    color: #A9B7C6;
+    padding:4px;
+    padding-left:10px;
+    padding-right:10px;
+    margin-right:10px;
+    
+    border:1px solid #FFF;
+    background-color:#313335;
+    border-radius: 5px;
+}
