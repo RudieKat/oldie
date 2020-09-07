@@ -16,10 +16,10 @@
 <li><a href="/oldie/part1.html">A new hope</a></li>
 <li><a href="/oldie/logical1.html">It’s a trap</a></li>
 <li><a href="/oldie/constants.html">Constants and candy</a></li>
-<li>Equality now</li>
-<li>Logically speaking</li>
-<li>Back to math</li>
+<li><a href="/oldie/arithmetic.html">Mrs Badcrumble goes to math class</a></li>
 <li>Bits and bobs</li>
+<li>Logically speaking</li>
+<li>Divide and conquer</li>
 <li>Stack them</li>
 <li>Stacked so high</li>
 <li>Serial comms online</li>
