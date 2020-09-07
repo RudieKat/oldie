@@ -1,0 +1,258 @@
+Reference Manual 
+
+
+
+Distribution No.l 
+
+
+
+This is the first in a series of distributions of material which, when complete, will 
+constitute the reference manual for the ULTRA-16 System. Each distribution will 
+contain pages to be inserted into a loose-leaf binder, and may consist of basic 
+material for one or more of the sections of the manual and/or replacement pages 
+which correct previously published material. In addition, each distribution will 
+contain a list of current pages of the manual, a list of the form numbers of all 
+previous distributions, and, if necessary because of new included sections or 
+extensive changes, an updated table of contents. 
+
+A three-ring loose-leaf binder, the Reference Manual will be supplied to ULTRA-16
+installations to hold the pages issued in these distributions. A set of index tabs 
+will also be provided with the binder to facilitate reference to a particular part
+of the system. The set of tabs will be printed with titles and section numbers of 
+the various parts of the system, as follows: 
+
+
+
+01 
+
+
+Introduction 
+
+
+02 
+
+
+ULTIMA Language 
+
+
+03 
+
+
+Assembler 
+
+
+
+04 
+
+
+Debugging System 
+
+
+05 
+
+
+System I/O 
+
+
+06 
+
+
+Graphics 
+
+
+07 
+
+
+Cryptographic functions 
+
+
+08 
+
+
+Programming and Operating Notes 
+
+
+09 
+
+
+Glossary 
+
+
+10 
+
+
+Appendices 
+
+
+11 
+
+
+Index 
+
+
+
+This, then, will be the arrangement of the manual. In connection with the above 
+outline of the ULTRA-16 reference manual, it should be noted that Section 7, 
+Cryptographic functions, will not be included in the documentation supplied
+to all locations for security reasons. Please also note that the enclosure is
+tamper proof, any attempt at accessing the physical hardware will result in
+the complete destruction of the system. 
+Programming 
+and Operating Notes, was included as a means whereby programming techniques, 
+operating methods, etc. , which have been found useful by one user of SOS, could be 
+conveniently included in this manual and thereby communicated to the other users 
+of the system. Material of this sort, which is intended for inclusion in the manual, 
+should be addressed to: 
+
+
+
+
+© 1970 by Global Ballistics Corporation 
+
+
+
+It is also anticipated that a companion manual, the ULTRA-16 General 
+Information Manual, will be published in the future. That manual will approach 
+the system on a more basic level and will be intended primarily for persons who are 
+unacquainted with the ULTRA series. 
+
+In order to facilitate updating of the manual, all pages will specify the distribution 
+number and will include a date, consisting of the month and year published, and a 
+page number. All page numbers, except those for the appendices, will be six digits 
+separated into three groups of two digits by a decimal point. The first two digits 
+will be the section number, the next two digits the chapter number within that 
+section, and the last two digits will be the number of the page within the chapter. 
+For example, 05. 02. 04 will be the number of the fourth page of the second chapter 
+in the System I/O Section (05). The page numbers of the appendices will be 
+eight digits long. The first two will be 12 (the section number of the appendices), 
+the next three groups of two digits will be (in order), appendix number, chapter 
+number, and page number. 
+
+
+
+
+
+Reference Manual 
+
+
+
+Distribution No. 2 
+
+
+
+This distribution contains additional reference material for the ULTRA-16 
+System. The attached pages include both new material and pages to replace 
+some previously published. 
+The spaces in the numbering have been left so that the series of 
+appendices presently planned will be numbered in an orderly fashion. The 
+replacement pages include an updated Table of Contents and listing of current 
+pages. 
+
+
+
+ULTRA-16 Hardened Silo System - International Version
+
+
+
+
+
+Reference Manual 
+
+
+
+Distribution No. 71 
+
+
+
+This distribution contains additional reference material for the SHARE 709 
+System. The attached pages include both new material and pages to replace 
+some previously published. The new material consists of Section 06: 
+Debugging System; one chapter of Section 07: Input/Output System; and initial 
+pages for Section 13: Index. The replacement pages include an updated 
+Table of Contents and listing of current pages. 
+
+Users of SOS are invited to contribute material, for inclusion in Section 10: 
+Programming and Operating Notes, so that programming techniques, 
+operating procedures, etc. , which have been found useful by them may be 
+communicated to other users of the system. Such material should be 
+addressed to: 
+
+SOS Group 
+
+704/709/7090 Applied Programming 
+
+International Business Machines Corporation 
+
+1271 Avenue of the Americas 
+
+New York 20, New York 
+
+
+
+SHARE System for the IBM 70S 
+
+
+
+
+^ 
+
+
+
+
+Reference Manual 
+
+
+
+Distribution No.4 
+
+
+
+This distribution contains additional reference material for the SHARE 709 
+System. The attached pages include both new material and pages to replace 
+some previously published. The new material consists of five chapters of 
+Section 07: Input/Output System; and Section 09: SHARE Monitor. The re- 
+placement pages include an updated Table of Contents and Index, and a listing 
+of current pages. 
+
+Users of SOS are invited to contribute material, for inclusion in Section 10: 
+Programming and Operating Notes, so that programming techniques, operating 
+procedures, etc. , which have been found useful by them may be communicated 
+to other users of the system. Such material should be addressed to: 
+
+SOS Group 
+
+704/709/7090 Applied Programming 
+
+International Business Machines Corporation 
+
+1271 Avenue of the Americas 
+
+New York 20, New York 
+
+
+
+SHARE System for the IBM 709 
+
+
+
+
+
+Reference Manual 
+
+
+
+Distribution No.5 
+
+
+
+This distribution contains material for inclusion in the SHARE 709 System 
+Reference Manual. The attached pages include both new material and pages to 
+replace some previously published. The new material consists of Section 02: 
+SCAT Language; Section 03: Compiler; two chapters of Section 07: Input/Output 
+System; and two appendices. The replacement pages include an updated Table 
+of Contents and listing of current pages, and index pages. 
+
+Users of SOS are invited to contribute material, for inclusion in Section 10: 
+Programming and Operating Notes, so that programming techniques, operating 
+procedures, etc. , which have been found useful can be communicated to other 
+users of the system.
