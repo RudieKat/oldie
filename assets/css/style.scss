@@ -3,5 +3,8 @@
 
 @import "{{ site.theme }}";
 body {
-    font-family: font-family: Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    background: #2B2B2B;
+    color: #A9B7C6;
+    font-family: Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-variant-ligatures: none;
 }
