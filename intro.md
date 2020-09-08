@@ -18,8 +18,8 @@
 <li><a href="/oldie/constants.html">Constants and candy</a></li>
 <li><a href="/oldie/arithmetic.html">Mrs Badcrumble goes to math class</a></li>
 <li><a href="/oldie/bitops.html">Bits and bobs</a></li>
-<li>Logically speaking</li>
-<li>Divide and conquer</li>
+<li><a href="/oldie/comparisons.html">Are you a summer’s day?</a></li>
+<li><a href="/oldie/logical2.html">That old timey logic</a></li>
 <li>Stack them</li>
 <li>Stacked so high</li>
 <li>Serial comms online</li>
