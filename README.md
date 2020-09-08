@@ -9,6 +9,6 @@ I hope you will gain something from it at least. I did and I will listen to any 
 [Start here](/oldie/intro.html)
 
 Copyright and all that Groucho AB 2020, I'll change that shit up eventually but relax. Whatever code you write is your own. I did this for my kids and for all the developers out there who don't know shit and NAND gates. 
-[contact])(email:mikder+emu@gmail.com)
+[contact](email:nikder+emu@gmail.com)
 
 
