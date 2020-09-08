@@ -9,14 +9,18 @@
 <h3 id="addition">Addition</h3>
 <p>Yes yes, 1+1 = 2 and so on. But what does 65200 + 561 equal? Don’t be a smartypant, this is a 16 bit lesson and you know it. Anyone?<br>
 225, that’s right. Well done, well done. If you don’t get this then you can leave. No, stay. Here’s the thing. We have a total of 16 bits. We can use them to represent a number between 0 and 65535 which is represented as 0b1111 1111 1111 1111. All the ones are taken. So if the result of an addition is larger than our maximum, any bits set above the maximum are lost. So we don’t end up with the maximum value but rather something else.<br>
-65200 is<br>
-0b1111 1110 1011 0000<br>
-561 is<br>
-0b0000 0010 0011 0001</p>
-<p>A normal addition would result in 65761 which is<br>
-0b1 0000 0000 1110 0001<br>
-That 0b1 looks suspicious! Yes, it happens to be 65 356 which is out of bounds and so we wave goodbye to it and the result is<br>
-0b0000 0000 1110 0001</p>
+65200 is</p>
+<pre><code>0b1111 1110 1011 0000
+</code></pre>
+<p>561 is</p>
+<pre><code>0b0000 0010 0011 0001
+</code></pre>
+<p>A normal addition would result in 65761 which is</p>
+<pre><code>0b1 0000 0000 1110 0001
+</code></pre>
+<p>That 0b1 looks suspicious! Yes, it happens to be 65 356 which is out of bounds and so we wave goodbye to it and the result is</p>
+<pre><code>0b0000 0000 1110 0001
+</code></pre>
 <p>Now we can take a minute and work a little on this whole binary thing. Since we got so lucky with our example, the example fits neatly into just 8 bits which means we have to do less work and if there is one thing Mrs Badcrumble likes it is less work and flan.</p>
 <p>If we take the lowest 8 bits it might be useful for us to see what they represent in decimal (remember the powers of 2).</p>
 
