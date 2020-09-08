@@ -3,13 +3,16 @@
 
 @import "{{ site.theme }}";
 .page-header {
-    color: #fff;
+    color: #118980;
     text-align: center;
-    background-color: #0d4c70;
+    background-color: #35002E;
     background-image: none;
 }
 .page-header>.btn {
     visibility: hidden;
     display:none;
     
+}
+body {
+    background-color: #303356;
 }
