@@ -1,4 +1,4 @@
 theme: jekyll-theme-hacker
 title: code better
 description: 16 bits. 4 instructions. You can do it.
-downloads: false
+show_downloads: "false"
