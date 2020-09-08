@@ -11,7 +11,9 @@
 <pre><code>mov sp,r0
 </code></pre>
 <p>My example is a much, MUCH simpler CPU design which doesn’t have the luxury of having these instructions at the outset but it you follow along you will find that there is no real difference.</p>
-<p>I hope you enjoy it. I did.</p>
+<p>I hope you enjoy it. I did.<br>
+When you want  to test some code the emulator with all sorts of bells, bugs and whistles can be found <a href="/oldie/emu.html">here</a><br>
+In due time there will be direct links from the code in the lessons but I’m lazy so not yet.</p>
 <ol>
 <li><a href="/oldie/part1.html">A new hope</a></li>
 <li><a href="/oldie/logical1.html">It’s a trap</a></li>
