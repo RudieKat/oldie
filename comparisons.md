@@ -40,5 +40,5 @@ non_equal:
     	;if the carry but is set then b == a
     	;if the carry bit is not set then b &lt; a
 </code></pre>
-<p>Now you need to sit down on your own and think about how to use this particular bit of magic because we’re about to to start doing a lot of trickery and you might want to feel comfortable with the use of the jcz and carry bit before we head into deep dark arts of self modifying code and stacks.</p>
+<p>Now you need to sit down on your own and think about how to use this particular bit of magic because we’re about to to start doing a lot of trickery and you might want to feel comfortable with the use of the jcz and carry bit before we head into deep dark arts of self modifying code and stacks. I suggest heading over to the <a href="/oldie/emu.html">emulator</a></p>
 
