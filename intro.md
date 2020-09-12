@@ -22,7 +22,7 @@ In due time there will be direct links from the code in the lessons but I’m la
 <li><a href="/oldie/bitops.html">Bits and bobs</a></li>
 <li><a href="/oldie/comparisons.html">Are you a summer’s day?</a></li>
 <li><a href="/oldie/logical2.html">That old timey logic</a></li>
-<li>Stack them</li>
+<li><a href="/oldie/stacks1.html">Explaining stacks</a></li>
 <li>Stacked so high</li>
 <li>Serial comms online</li>
 <li>Control characters and you</li>
