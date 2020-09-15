@@ -3,10 +3,10 @@
 
 ---
 
-<h1 id="macro-11-pal-11">MACRO-11 /PAL-11</h1>
+<h1 id="macro-11-pal-11r">MACRO-11 /PAL-11R</h1>
 <h3 id="do-not-bother-reading-unless-you-have-serious-issues">DO NOT BOTHER READING UNLESS YOU HAVE SERIOUS ISSUES</h3>
 <p>There’s limited (or also plenty depending on how insane you are) documentation of macro-11 available and I figured it might make sense to make my attempts at boiling it down to something more useful for my/our purposes here.  I’ve taken the liberty of including some additional resources that may be interesting as well.<br>
-<a href="/oldie/doc/DEC-11-ASDB-D_PAL-11R_Assembler_Programmers_Manual_May71.pdf">PAL-11</a><br>
+<a href="/oldie/doc/DEC-11-ASDB-D_PAL-11R_Assembler_Programmers_Manual_May71.pdf">PAL-11R</a><br>
 <a href="/oldie/doc/DEC-11-OIMRA-A-D_MACRO_75.pdf">Macro-11</a><br>
 <a href="/oldie/doc/UNIX_ProgrammersManual_Nov71.pdf">Unix Programmer’s Manual Nov 1971</a></p>
 
