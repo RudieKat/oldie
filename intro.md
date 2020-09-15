@@ -28,4 +28,7 @@ In due time there will be direct links from the code in the lessons but I’m la
 <li>Call stacks and onwards</li>
 <li>What does it all mean</li>
 </ol>
+<h3 id="bonus-content-for-the-verifiably-insane">Bonus content for the verifiably insane</h3>
+<p><a href="/oldie/macro-11.html">macro-11</a><br>
+<a href="/oldie/radix.html">radix-50</a></p>
 
