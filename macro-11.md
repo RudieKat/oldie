@@ -9,6 +9,7 @@
 <a href="/oldie/doc/DEC-11-ASDB-D_PAL-11R_Assembler_Programmers_Manual_May71.pdf">PAL-11R</a><br>
 <a href="/oldie/doc/DEC-11-OIMRA-A-D_MACRO_75.pdf">Macro-11</a><br>
 <a href="/oldie/doc/UNIX_ProgrammersManual_Nov71.pdf">Unix Programmer’s Manual Nov 1971</a></p>
+<p>(NOTE: Files may note be there currently due to some… JEKYLL BEING BASTARDLY)</p>
 
 <table>
 <thead>
