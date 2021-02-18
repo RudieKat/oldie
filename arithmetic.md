@@ -109,9 +109,9 @@ nand max
 <p>What happens is that in the</p>
 <pre><code>add b
 </code></pre>
-<p>step the carry bit is set because the total will go from 0xFFAF to 0x13 and create an overflow. This can be used to great effect but it also means that we can have a JCZ instruction that is basically a continue if a &gt; b. But wait. Doesn’t that also mean??? We’ll get to that kids.</p>
+<p>step the Carry Bit is set because the total will go from 0xFFAF to 0x13 and create an overflow. This can be used to great effect but it also means that we can have a JCZ instruction that is basically a continue if a &gt; b. But wait. Doesn’t that also mean??? We’ll get to that kids.</p>
 <h3 id="multiplication">Multiplication</h3>
-<p>Multiplication is repeated addition. I am fairly certain that this comes a no surprise. So here we have to start thinking about (because I’m not going to overcomplicate things) loops.<br>
+<p>Multiplication is repeated addition. I am fairly certain that this comes as no surprise. So here we have to start thinking about (because I’m not going to overcomplicate things) loops.<br>
 A loop is very common structure when programming. You might loop WHILE some condition holds true like</p>
 <pre><code>while (raining==true) {
 	use_umbrella();

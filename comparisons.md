@@ -10,8 +10,8 @@
 <li>Greater than</li>
 <li>Less than</li>
 </ul>
-<p>We have actually already touched on the very specific mechanism we can use to achieve these types of comparisons and if you guessed that it as the carry bit you guessed correctly. Well done Harry, use the force and all that.<br>
-Let’s say that we want to compare 4 to 4 and see if they are equal, how do we do this? I will argue here that the BEST way of doing this is to use the carry bit in a very specific way.</p>
+<p>We have actually already touched on the very specific mechanism we can use to achieve these types of comparison and if you guessed that mechanism is the Carry Bit, you guessed correctly. Well done Harry, use the force and all that.<br>
+Let’s say that we want to compare 4 to 4 and see if they are equal, how do we do this? I will argue here that the BEST way of doing this is to use the Carry Bit in a very specific way.</p>
 <pre><code>.data
 	.a 0x04
 	.b 0x04
