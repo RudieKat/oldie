@@ -9,15 +9,15 @@
 Or perhaps clearer<br>
 <code>6*1600 + 15*40 + 15</code><br>
 Decoding it is reminiscent of dealing with a right bitshift in a way.<br>
-Assuming we have 0x27E7 (or 10215) for three characters we can simply subtract 1600 until the carry bit is set. Let’s try that</p>
+Assuming we have 0x27E7 (or 10215) for three characters we can simply subtract 1600 until the Carry Bit is set. Let’s try that</p>
 <pre><code>10215 - 1600 = 8615 (add 1 to our top value)
 8615 - 1600 = 7015 (add 1 - total 2)
 7015 - 1600 = 5415 ( add 1 - total 3)
 5415 - 1600 = 3815 (add 1 - total 4)
 3815 - 1600 = 2215 (add 1 - total 5)
 2215 - 1600 = 615 ( add 1 - total 6)
-Next iteration triggers the carry bit so our first char is 6
-Do the same with 40 for the mid char and the remainder when done is the third one.Fortunately this was mainly used in the RT-11 file system 
+Next iteration triggers the Carry Bit so our first char is 6
+Do the same with 40 for the mid char and the remainder when done is the third one. Fortunately this was mainly used in the RT-11 file system 
 </code></pre>
 
 <table>

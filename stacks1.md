@@ -4,8 +4,8 @@
 ---
 
 <h1 id="explaining-stacks">Explaining stacks</h1>
-<p>One of the jobs I had as a teenager was as a dishwasher. I worked extra on days off to make money. Maybe you didn’t have to. Well, you missed out in understanding stacks then. You see, when you’re washing dishes in a restaurant, especially one that operates during lunch hours, you work with these piles of plates that are placed in metal tubes so that you can take one off the top and the pile moves up and makes the next one available.</p>
-<p>See. And I also made money. So that’s what you get for being a lazy kid. This is what is referred to as a LIFO stack or Last In First Out. You can compare it to a stack of books on your nightstand. You put books on it and the last one you put there is the first one you pick up from the top. The other kind, which we won’t be talking about, not yet, is the FIFO. The First In First Out. For those of you with a programming background, this is like an array or a a list of things. For the rest of you, it’s like writing a shopping list, you write it and the first item remains on top (unless you are a very confused and messy list writer). So the first thing you go looking for is the first thing on your list.</p>
+<p>One of the jobs I had as a teenager was as a dishwasher. I worked extra on days off to make money. Maybe you didn’t have to. Well, you missed out in understanding stacks then. You see, when you’re washing dishes in a restaurant, especially one that operates during lunch hours, you work with these piles of plates that are placed in metal tubes so that you can take one off the top and the pile moves up and makes the next plate available.</p>
+<p>See. And I also made money. So that’s what you get for being a lazy kid. This is what is referred to as a LIFO stack or Last In First Out. You can compare it to a stack of books on your nightstand. You put books on it and the last one you put there is the first one you pick up from the top. The other kind, which we won’t be talking about, not yet, is the FIFO. The First In First Out. For those of you with a programming background, this is like an array or a list of things. For the rest of you, it’s like writing a shopping list, you write it and the first item remains on top (unless you are a very confused and messy list writer). So the first thing you go looking for is the first thing on your list.</p>
 <p>So now that we have a basic idea of what a stack is (a list of things really) we can consider how one is constructed. First of all a stack has to have a space to exist in. So perhaps we say that we have a stack that holds 10 plates. And since we need space for other things we decide that these plates are placed at memory addresses from 0x40 to 0x49. Great. So now we want to add a plate. Where to we put it? We have no plates in our stack at the start and we are expecting to use a LIFO style plate stack, which means whatever we put in last will be the first thing we pull out.</p>
 
 <table>
@@ -57,9 +57,9 @@
 <td>0</td>
 </tr>
 </tbody>
-</table><p>In order to interact with this stack we can assume we need to have some functions that help. One to put this onto the stack, commonly called push, one to take things off the stack, commonly called pop. It might also be useful to have one called peek which looks but doesn’t modify the stack. Perhaps we just want to make sure our plate isn’t dirty.</p>
-<p>If we decide to start from the top we can say that have a counter that tells us how many items are already in the stack. It would be set to 0 and we could then add 1 when pushing a plate and subtracting 1 when popping a plate. When the counter was 0 the stack would be empty and when the stack was 0xA it would be full.</p>
-<p>This means that we can ask if the stack is empty or if it is in fact full. Perhaps you have heard of the concept “stack overflow”. Yes, there’s a reason for that.</p>
+</table><p>In order to interact with this stack we can assume we need to have some functions that help. One to put things onto the stack, commonly called push, one to take things off the stack, commonly called pop. It might also be useful to have one called peek which looks but doesn’t modify the stack. Perhaps we just want to make sure our plate isn’t dirty.</p>
+<p>If we decide to start from the top we can say that we need a counter that tells us how many items are already in the stack. It would be set to 0 and we could then add 1 when pushing a plate and subtracting 1 when popping a plate. When the counter was 0 the stack would be empty and when the stack was 0xA it would be full.</p>
+<p>This means that we can ask if the stack is empty or if it is in fact full. Perhaps you have heard of the concept “stack overflow”? Yes, there’s a reason for that.</p>
 <p>And so far everything sounds quite straight forward. But there are dragons lurking here. Let’s test this out.</p>
 <pre><code>.data
 	.value 0x123
@@ -160,9 +160,9 @@ store_do:
     
 ; end
 </code></pre>
-<p>I apologize because this is throwing you right in the deep end. See that label <code>store_do</code>? We can use the following instruction and modify it to write data where we want to. So that’s what we do. And then we increment our pointer and go on.<br>
+<p>I do apologize because this is throwing you right in the deep end. See that label <code>store_do</code>? We can use the following instruction and modify it to write data where we want to. So that’s what we do. And then we increment our pointer and go on.<br>
 Go ahead and test it.</p>
-<p>If you have a headache now I suggest you take an ibuprofen because the pop isn’t nicer. It does the same thing, only in reverse.</p>
+<p>If you have a headache now I suggest you take an ibuprofen because the pop isn’t any nicer. It does the same thing, only in reverse.</p>
 <pre><code>; Unmutable
 .const
     .zero 0

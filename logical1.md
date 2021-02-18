@@ -63,6 +63,6 @@ nand scratch	; nand
 sav scratch
 </code></pre>
 <p>At this point it might be worth considering what our standard constants should look like.</p>
-<p>Let me first of all be very clear: this language isn’t designed for any other purpose than to be instructive. It has a lot of needless cruft that is mainly there to make it mildly more readable and believe me, mildly is is really an overstatement.</p>
+<p>Let me first of all be very clear: this language isn’t designed for any other purpose than to be instructive. It has a lot of needless cruft that is mainly there to make it mildly more readable and believe me, mildly is really an overstatement.</p>
 <p>But time to deal with some <a href="/oldie/constants.md">constants</a></p>
 

@@ -8,7 +8,7 @@
 <h3 id="now-then">Now then</h3>
 <p>So, let’s talk about something real fun. Bit operations. Many of you never had to work in an environment where a division by a power of 2 was actually slower than a bit shift and you are probably staring at this sentence wondering what I am talking about.</p>
 <p>Take a simple example. We have the number 12 or 0b1100 in binary. If we shift those bits to the left that means we add an extra 0 turning<br>
-0b1100 into 0b11000. And 12 becomes 24. But the same goes for the other direction. If we bit shift to the right we remove the lowest bit turning 0b1100 into 0b110. And 12 becomes 6. And once upon a time before compilers become much better at optimisations  it wasn’t uncommon to use bit shifting for multiplication and division for a certain type (powers of two, remember?).</p>
+0b1100 into 0b11000. And 12 becomes 24. But the same goes for the other direction. If we bit shift to the right we remove the lowest bit turning 0b1100 into 0b110. And 12 becomes 6. And once upon a time before compilers become much better at optimisation it wasn’t uncommon to use bit shifting for multiplication and division for a certain type (powers of two, remember?).</p>
 <p>And yet again I will bait and switch and say… listen. We have to talk about memory. You remember constants and the variable values. But what does that mean really?<br>
 I find it easy to think of memory as a long row of boxes that are numbered from 0 to whatever number of boxes you have. When you want to know what is in a specific box you need to know its number (or adress) but the value inside can change over time (unless it’s a constant because then you will end up with an ACCESS VIOLATION.<br>
 Since we only have a single register (we can’t count the Adress register and the Program Counter (I) because they are just there to accommodate I/O and program execution) we have to store values in order to make more complex calculations. One way to do this is just do declare that we have two temporary storage addresses and those are A and B. There are others but we will get to those later. For now, let’s just work with a fixed number. So now when we want to bit shift to the left, let’s see what we can do.</p>
@@ -45,7 +45,7 @@ shift_done: ;end of shifting, the value is held in a
 	jcz 0x0 ;jump to a constant location just for the hell of it
 ;END
 </code></pre>
-<p>As you can tell we don’t need temporary storage when for this particular method but that also destroys the initial values<br>
+<p>As you can tell we don’t need temporary storage for this particular method but that also destroys the initial values<br>
 Another variant would be to use two temporarily declared addresses and init those early. That might look like this</p>
 <pre><code>.data
 		.a 0x122
@@ -85,7 +85,7 @@ Another variant would be to use two temporarily declared addresses and init thos
 		jcz 0x0 ;jump to a constant location just for the hell of it
 	;END
 </code></pre>
-<p>This would be nondestructive and that has benefits too.</p>
+<p>This would be nondestructive and that has other benefits too.</p>
 <p>How about going the other way?</p>
 <h3 id="right-bit-shift-and-byte-swap">RIGHT BIT SHIFT (AND BYTE SWAP)</h3>
 <p>TBD documentation and explanation because here we explore some new concepts</p>
