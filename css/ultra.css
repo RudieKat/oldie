@@ -162,7 +162,7 @@ body {
     border-radius: 5px;
     display:block;
     margin-bottom:10px;
-    width:inherit;
+    width:100px;
 }
 .CodeMirror-reporter::before {
     content:attr(regname);

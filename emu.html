@@ -388,11 +388,11 @@
                         }*/
                         break;
                     case Register.OUT_T:
-                        let existing = io_out.innerText.split(",").map(u => u.trim()).filter(u => u.length > 0);
+                        let existing = io_out.innerHTML.split("<br>").map(u => u.trim()).filter(u => u.length > 0);
                         if (existing.length == 0 || existing[0]!== v) {
                             existing.unshift(v);
                         }
-                        io_out.innerText = existing.slice(0,5).join(",");
+                        io_out.innerHTML = existing.slice(0,5).join("<br>");
                         /*if (cpu.running) {
                             vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0x11,0x47]));
                             vt.rcv_bits(vt.chars_to_bits(v));
