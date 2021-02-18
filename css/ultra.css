@@ -16,9 +16,9 @@ body {
     height:720px;
     overflow-y: scroll;
     
-    color:#FFF;
+    //color:#FFF;
     color: #A9B7C6;
-    background-color:#313335;
+    //background-color:#313335;
     background-color:#212225;
     font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
     font-variant-ligatures: none;
@@ -76,7 +76,10 @@ body {
     border:2px solid #121212;
     border-radius: 5px;
 }
-screen::after {
+.screen.small {
+    font-size:12px;
+}
+.screen::after {
     content: "";
     position: absolute;
     top: 0;
@@ -85,27 +88,65 @@ screen::after {
     height: 100vh;
     background: repeating-linear-gradient(
         0deg,
-        rgba(black, 0.15),
-        rgba(black, 0.15) 1px,
+        rgba(0,0,0, 0.15),
+        rgba(0,0,0, 0.15) 1px,
         transparent 1px,
         transparent 2px
     );
 }
 .CodeMirror-buttonsPanel {
     margin-bottom:-6px;
-    height: 80px;
-    float:left;
-    width:auto;
     padding-left:10px;
     padding-top:10px;
-}
+    width:auto;
 
-.CodeMirror-buttonsPanel button {
-    padding: .3em;
-    width: 7.3em;
-    margin-right: .5em;
+}
+.CodeMirror-regPanel {
+    height: fit-content;
+    vertical-align: top;
+}
+.CodeMirror-buttonsPanel input {
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-variant-ligatures: none;
+    width:auto;
+    
+    color: #A9B7C6;
+    background-color: #212225;
     text-align: center;
     margin-bottom:20px;
+    display:block;
+    padding:4px;
+    padding-left:10px;
+    padding-right:10px;
+    margin-right:10px;
+    
+    border:1px solid #FFF;
+    background-color:#313335;
+    border-radius: 5px;
+    display:inline;
+    margin-bottom:10px;
+}
+.CodeMirror-buttonsPanel input::before {
+    content: attr(cycles,0);
+}
+.CodeMirror-buttonsPanel button {
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-variant-ligatures: none;
+    width:auto;
+    
+    color: #A9B7C6;
+    //background-color: #212225;
+    text-align: center;
+    //margin-bottom:20px;
+    //display:block;
+    padding: 4px 10px;
+    margin-right:10px;
+    
+    border:1px solid #FFF;
+    background-color:#313335;
+    border-radius: 5px;
+    display:inline;
+    margin-bottom:10px;
 }
 .CodeMirror-reporter {
     font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
@@ -119,6 +160,9 @@ screen::after {
     border:1px solid #FFF;
     background-color:#313335;
     border-radius: 5px;
+    display:block;
+    margin-bottom:10px;
+    width:inherit;
 }
 .CodeMirror-reporter::before {
     content:attr(regname);

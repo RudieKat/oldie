@@ -20,6 +20,7 @@
         <script src="./js/device/vt52.mjs" type="module"></script>
         <script src="./js/device/rt11.mjs" type="module"></script>
         <script src="./js/device/keyboard.mjs" type="module"></script>
+        <script src="./js/ui/buttons.mjs" type="module"></script>
     <style>
         
     </style>
@@ -28,6 +29,7 @@
         import {IOStream, IOBus, DevNullBus, devnull} from './js/bus/io.mjs';
         import {CPU,cpu,LineAware,Memory,Operation,Flag,Register} from './js/cpu/index.mjs';
         import {Hexer8,Hexer16} from './js/cpu/common.mjs';
+        import {ControlButton,ValueDisplay} from './js/ui/buttons.mjs';
         import {SyntaxError,parse} from './js/parser.mjs';
         window.fs = fs;
         import {RS232Bus} from './js/device/rs232.mjs';
@@ -119,6 +121,13 @@
             }
             
         }
+        window.el = (id) =>{
+            return document.getElementById(id);
+        }
+
+        window.execSlow = () => {
+            window.exec(parseInt(window.el('cycle-counter').value));
+        }
         window.exec = (cycles) => {
             window.resetMem();
             
@@ -129,6 +138,25 @@
             } else {
                 cpu.exec();
             }
+        }
+        window.controlButtons = [];
+        window.createButtons =() => {
+            
+            window.controlButtons.push(new ControlButton("Run",window.exec,true));
+            window.controlButtons.push(new ControlButton("Run Slow",window.execSlow,true));
+            window.controlButtons.push(new ControlButton("Reset",window.reset,true));
+            window.controlButtons.push(new ControlButton("Step",window.step,true));
+            window.controlButtons.push(new ControlButton("Toggle Parse",() => window.toggleParse(),true,true));
+            //window.controlButtons.push(new ControlButton("Save",() => window.persist(),true,false));
+            //window.controlButtons.push(new ControlButton("New File",() => window.mew_file(),true,false));
+            //window.controlButtons.push(new ControlButton("Toggle screen",() => window.screen_tooggle(),true,true));
+            
+            let d = document.getElementById("cm-buttons");
+            console.log(d);
+            for(let i = 0; i < window.controlButtons.length;i++) {
+                d.appendChild(window.controlButtons[i].element);
+            }
+            
         }
         window.step = () => {
             cpu.step();
@@ -307,14 +335,14 @@
                 lineNumberFormatter:window.lineNumberFormatter,
                 gutters: ["CodeMirror-linenumbers","breakpoints","spacer"]
             });
-            let panel = document.querySelector(".CodeMirror-buttonsPanel");
+            let panel = document.getElementById("cm-registers");
             panel.appendChild(document.createElement("br"));
-            let cc = createView("reporter-cpu");
-            let r = createView("register-r");
-            let i = createView("register-i");
-            let a = createView("register-a");
-            let io_in = createView("register-ioin");
-            let io_out = createView("register-ioout");
+            let cc = createView("reporter-cpu",panel);
+            let r = createView("register-r",panel);
+            let i = createView("register-i",panel);
+            let a = createView("register-a",panel);
+            let io_in = createView("register-ioin",panel);
+            let io_out = createView("register-ioout",panel);
             cpu.onchange = (type,value)=> {
                 value = ""+value;
                 cc.innerText = value;
@@ -326,7 +354,7 @@
             };
             //io_in.style.content = "I/O IN: "
             //io_out.style.content = "I/O OUT: "
-            let fc = createView("flag-c");
+            let fc = createView("flag-c",panel);
             let regListener = (type,v) => {
                 v = Hexer16(v);
                 switch(type) {
@@ -406,11 +434,10 @@
                 }
             });
             window.editor.setSize(640,720);
-            
+            window.createButtons();
             
         }
-        function createView(id) {
-            let panel = document.querySelector(".CodeMirror-buttonsPanel");
+        function createView(id,panel) {
             let r = document.createElement("span");
             r.id = id;
             r.className = "CodeMirror-reporter";
@@ -434,24 +461,25 @@
     </script>
     </head>
     <body onload="init()">
-        <span style='display:block;font-size: 32px;width:100%;background-color: darkred;color:whitesmoke;font-weight: bolder;font-family:Arial, Helvetica, sans-serif; :padding:10px;'>If this just looks insane, start <a href='./intro.html'>Here</a>. Also have a look at <a href='./emu_issues.html'>Known Issues</a></span>
-        <div id='cm-buttons' class="CodeMirror-buttonsPanel">
-            <button onclick="exec()"><strong>Run</strong></button>
-            <button onclick="exec(parseInt(document.getElementById('cycle-counter').value))"><strong>Run slow</strong></button>
-            <button onclick="reset()"><strong>Reset CPU</strong></button>
-            <button onclick="step()"><strong>Step</strong></button>
-            <button onclick="toggleParse()"><strong>Toggle parse</strong></button>
-            <button onclick="resetMem()"><strong>Reset RAM</strong></button>
-            <button onclick="persist()"><strong>Save</strong></button>
-            <button onclick="new_file()"><strong>New File</strong></button>
-            <button id='screen-toggle' onclick="screen_toggle()"><strong>Screen OFF</strong></button>
+
+        
+        <span style='display:block;font-size: 32px;width:100%;background-color: darkred;color:whitesmoke;font-weight: bolder;font-family:Arial, Helvetica, sans-serif; padding:10px;'>If this just looks insane, start <a href='./intro.html'>Here</a>. Also have a look at <a href='./emu_issues.html'>Known Issues</a></span>
+        <!--<div id='cm-buttons' class="CodeMirror-buttonsPanel">
             <input type="number" value="10" id="cycle-counter"/>
             <input type="text" autocomplete="off" value="" id="keyboard-input"/>
-        </div>
-        <table>
+        </div>!-->
+        <table style="width:80%">
 
         <tr>
+            <td style="vertical-align: top;">
+                
+                
+                <div id='cm-registers' class="CodeMirror-regpanel"></div>
+            </td>
             <td>
+                <div id='cm-buttons' class="CodeMirror-buttonsPanel">
+                    <input type="number" value="10"  class='CodeMirror-reporter' id="cycle-counter"/>
+                </div>
         <textarea id="code">
 ; Unmutable
 .const
@@ -478,9 +506,14 @@ main:
 end:
 ; end
         </textarea>
+        <p>
+        <input type="text" autocomplete="off"  style="width:65%" placeholder="keyboard input" class='CodeMirror-reporter'value="" id="keyboard-input"/>
+        </p>
+                
         </td>
+        
         <th>
-            <div class="wrap ram">
+            <div class="wrap ram" style="display:none;">
                 <table>
                     <thead>
                         <tr><th>Address</th><th>Value</th></tr>
@@ -491,7 +524,7 @@ end:
         </td>
         <td>
             <div class="wrap file">
-                <textarea id='terminal' style='resize:none;' readonly cols="80" rows="24" class='screen'></textarea>
+                <textarea id='terminal' style='resize:none;' readonly cols="80" rows="24" class='small screen'></textarea>
                 <table>
                     <thead>
                         <tr>
@@ -502,5 +535,7 @@ end:
                 </table>
             </div>
         </td>
+        </tr>
+        </table>
     </body>
 </html>
