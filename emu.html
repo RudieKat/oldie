@@ -169,7 +169,7 @@
                 window.editor.removeLineClass(i,"gutter","ultralight");
                 
                 memPos = LineAware.memoryAddress(i);    
-                if (memPos == next) {
+                if (memPos === next) {
                     window.editor.addLineClass(i,"wrap","ultralight");
                     window.editor.addLineClass(i,"gutter","ultralight");
                 }
@@ -275,7 +275,13 @@
                     }
                 }
             };
-            vt.update_at_interval(5); 
+            vt.update_at_interval(5);
+            vt.on('ERROR',(e) => {
+                if (e) {
+                    vt.active = false;
+                    cpu.halt();
+                }
+            });
             let vtb = vt.bus;
             window.screen_toggle = () => {
                 if (vt.active) {
@@ -425,7 +431,9 @@
             window.editor.on("changes", () => {
                 localStorage.setItem("_asm",document.getElementById("code").value);
                 if (parseOn) {
+
                     CPU.reset();
+
                     try {
                         parse(window.editor.getValue().trim());
                     } catch (err) {
@@ -483,8 +491,8 @@
         <textarea id="code">
 ; Unmutable
 .const
-    .one 1
     .zero 0
+    .one 1
     .max 0xFFFF
     .neg_one 0xFFFE
     .opmask 0xC000
@@ -497,6 +505,9 @@
 ; Mutable variables
 .data
     .tmp 0x0
+; ensure prog_end: label ends the program
+
+; back to zero, ready to roll
 ; MAIN
 main:
     add tmp
@@ -504,7 +515,15 @@ main:
     sav tmp
     jcz main
 end:
+nand 0
+nand max
+add op_sav
+  sav prog_end
+  nand op_sav
+  nand max
 ; end
+prog_end:
+add zero ;practical noop prog_end should be a standard macro
         </textarea>
         <p>
         <input type="text" autocomplete="off"  style="width:65%" placeholder="keyboard input" class='CodeMirror-reporter'value="" id="keyboard-input"/>

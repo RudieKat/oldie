@@ -20,7 +20,7 @@ export class Symbol extends LineAware {
         Memory.write(v,this._value);
     }
     get value() {
-        if (this._address == -1 ) {
+        if (this._address === -1 ) {
             return this._value;
         }
         return Memory.read(this.address);
@@ -55,7 +55,7 @@ export class SymbolBuffer extends Symbol {
         this._len = new Symbol(name + "_len",values.length);
     }
     get value() {
-        if (this._address == -1 ) {
+        if (this._address === -1 ) {
             return this._value;
         }
         return Memory.read(this.address);

@@ -70,6 +70,8 @@ export class Memory extends Reporter{
         this._latest.datum = v;
         if (addr < this._volatile && this._lock) {
             this._cpu.halt();
+            alert("HALTING AND CATCHING FIRE");
+
             if (addr !== 0) {
                 console.log("ACCESS VIOLATION - attempting to write to [0x" + addr.toString(16) + "] in non volatile segment");
             }

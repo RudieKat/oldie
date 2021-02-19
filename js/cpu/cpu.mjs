@@ -93,7 +93,7 @@ export class Flag extends Reporter{
     }
     set f(v) {
         
-        if (v != this._fval){
+        if (v !== this._fval){
             if (v) {
                 this.setf();
             } else {
@@ -180,12 +180,12 @@ class AccumulatorRegister extends Register {
     }
     set fv(v) {
         super.fv = v;
-        Flag.Z.f =v==0?1:0;
+        Flag.Z.f =v===0?1:0;
     }
     get value() {return super.value;}
     set value(v) {
         super.value = v;
-        Flag.Z.f =v==0?1:0;
+        Flag.Z.f =v===0?1:0;
     }
 }
 class AddressRegister extends Register {
@@ -211,7 +211,7 @@ class IORegister extends Register {
     constructor(type) {
         super(type);
         this._device = 0;
-        this._stream = new IOStream(type ==Register.IN_T?IO_READ:IO_WRITE);
+        this._stream = new IOStream(type === Register.IN_T?IO_READ:IO_WRITE);
         this.connect(devnull);
     }
     connect(bus) {
@@ -294,7 +294,7 @@ Register.create = () => {
     Register.OUT = new IOOutRegister(Register.OUT_T);
 };
     
-let _loopstop = 25;
+
 export class CPU extends Reporter{
     constructor() {
         super("CPU");
@@ -303,7 +303,7 @@ export class CPU extends Reporter{
         Flag.create();
         Register.create();
         this._ops = Operation.ops;
-        this._labels = Label.reg;
+        //this._labels = Label.reg;
         this._breakpoints = [];
         this._running = true;
         this._cycles = 0;
@@ -339,6 +339,11 @@ export class CPU extends Reporter{
     get running() {return this._running;}
     step() {
         let pos = Register.I.value;
+        if (pos === 0) {
+            this.process();
+            this.step();
+            return;
+        }
         let op = Memory.read(pos);
         this.fexec_op(op);
         this._cycles++;
@@ -349,7 +354,7 @@ export class CPU extends Reporter{
     execSlow(opsPerSec) {
         this._cycles = 0;
         opsPerSec = opsPerSec || 10;
-        let msPerCycle = (1000/opsPerSec)>>0;
+        let msPerCycle = (10000/opsPerSec)>>0;
         let op = null;
         let pos = Register.I.fv;
         if (msPerCycle< 5) {
@@ -379,7 +384,7 @@ export class CPU extends Reporter{
         Reporter.block();
         let t = 0;
         let ts = new Date().getTime();
-        while (this._running && (op=Memory.read(pos))!=null) {
+        while (this.running && (op=Memory.read(pos))!=null) {
             
             /*if (this.debug && this._breakpoints.indexOf[pos] >=0) {
                 break;
@@ -397,7 +402,7 @@ export class CPU extends Reporter{
         let opc = op&0xC000;
         op-=opc;
         let c = Flag.C.f;
-        if (Register.I.fv == this.mem.opStart) {
+        if (Register.I.fv === this.mem.opStart) {
             Register.OUT.fv = Register.R.fv;
             Register.R.fv = Register.IN.fv;
         }
@@ -425,7 +430,7 @@ export class CPU extends Reporter{
         Flag.C.f = c;
         
     }
-    exec_op(op) {
+    /*exec_op(op) {
         
         let opCode = op>>14;
         op &=0x3FFF;
@@ -438,7 +443,7 @@ export class CPU extends Reporter{
                 break;
             case Operation._ADD:
                 let v = Register.R.value + Memory.read(op);
-                Flag.C.f = ((v&0x10000)==0x10000)?1:0 ;
+                Flag.C.f = ((v&0x10000)===0x10000)?1:0 ;
                 Register.R.value = v&0xFFFF;
                 break;
             case Operation._SAV:
@@ -465,7 +470,7 @@ export class CPU extends Reporter{
                 throw new Error("ERROR IN EXEC_OP");
         }
         Register.I.value+=1;
-    }
+    }*/
     ppOps() {
         let s = "    OPERATIONS\n=================\n";
         for (let i = 0; i < this._ops.length;i++) {

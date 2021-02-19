@@ -42,9 +42,9 @@ export class Operation extends LineAware {
         return Operation.OPCODE[this.opcode] + " " + Hexer16(this.address) + "\t[" + Hexer16((this.opcode<<14)+this.address) + "]";
     }
     get w() {
-        console.log(this._value.address);
+        //console.log(this._value.address);
         let w =(this.opcode <<14) + this.address; 
-        console.log(this.pp() + ": " + w  +" " + ((this.opcode<<14)));
+        //console.log(this.pp() + ": " + w  +" " + ((this.opcode<<14)));
         return w;
     }
 }

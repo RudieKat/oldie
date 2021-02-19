@@ -49,15 +49,28 @@ export class VT52 extends RS232 {
         this._command_length = 0;
         this._pthread =null;
         this._scroll = 0;
+        this._errorHandler = null;
         
     }
     update_at_interval(ms) {
+        const errors = this._errorHandler;
         this._pthread = setInterval(() => {
-            let av = Math.min(10,this.available);
-            for (;av>0;av--) {
-                this.update();
+            try {
+                let av = Math.min(10,this.available);
+                for (;av>0;av--) {
+                    this.update();
+                }
+            } catch (e) {
+                if (errors) {
+                    errors(e);
+                }
             }
         }, ms);
+    }
+    on(e,h) {
+        if (e === 'ERROR') {
+            this._errorHandler = h;
+        }
     }
     end() {
         clearInterval(this._pthread);
@@ -88,7 +101,7 @@ export class VT52 extends RS232 {
     get graphics() {return this._graphics_mode;}
     char_count_on(row) {
         if (this._row_buffers.length > row) {
-            return this._row_buffers[row].filter(ch => ch != 0x2044 && ch != 0xA).length;
+            return this._row_buffers[row].filter(ch => ch !== 0x2044 && ch !== 0xA).length;
         }
         return 0;
     }
@@ -97,11 +110,11 @@ export class VT52 extends RS232 {
             let ch = this.read();
             if (this.command_mode) {
                 //console.log("CMD: " + ch.toString(16));
-                if (this.command_length==2) {
+                if (this.command_length===2) {
                     this._row = ch;//Math.max(ch,this._row_buffers.length-1);
                     this._command_length=1;
                     return;
-                } else if (this.command_length==1) {
+                } else if (this.command_length===1) {
                     this._col = ch;//Math.max(ch,79);
                     this._command_length = 0;
                     this._command_mode = false;
@@ -128,7 +141,7 @@ export class VT52 extends RS232 {
                         break;
                     case VT_CURSOR_LINE_DELETE:
                         this._row_buffers.splice(this._row,1);
-                        if (this._row == this._row_buffers.length) {
+                        if (this._row === this._row_buffers.length) {
                             this._row--;
                         }
                         break;
@@ -164,7 +177,7 @@ export class VT52 extends RS232 {
                 this._command_mode = false;
                 return;
             }
-            if (ch == VT_CMD_PREAMBLE) {
+            if (ch === VT_CMD_PREAMBLE) {
                 this._command_mode=true;
                 return;
             }
