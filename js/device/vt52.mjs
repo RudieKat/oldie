@@ -1,5 +1,5 @@
 /*jshint esversion:6*/
-import {RS232,PARITY_NONE,PARITY_MARK,PARITY_EVEN} from './rs232.mjs';
+import {PARITY_NONE,PARITY_MARK,PARITY_EVEN,RS323ModemDevice} from '../io/io2.mjs';
 export const VT_CURSOR_UP=0x1B41; // A
 export const VT_CURSOR_DOWN=0x1B42; // B
 export const VT_CURSOR_RIGHT=0x1B43; // C
@@ -34,7 +34,7 @@ const _graphics_chars = VT_GRAPHICS_CHARS.map(c => typeof(c) == 'number'?String.
 const _empty_row = " ".repeat(80);
 const _empty_row_chars = _empty_row.split(" ");
 
-export class VT52 extends RS232 {
+export class VT52 extends RS323ModemDevice {
     constructor(rate,transmit) {
         super(rate,transmit);
         this._col = 0;
@@ -50,6 +50,7 @@ export class VT52 extends RS232 {
         this._pthread =null;
         this._scroll = 0;
         this._errorHandler = null;
+        this._bus = this.readBus;
         
     }
     update_at_interval(ms) {
@@ -67,6 +68,7 @@ export class VT52 extends RS232 {
             }
         }, ms);
     }
+    get bus(){return this._bus;}
     on(e,h) {
         if (e === 'ERROR') {
             this._errorHandler = h;

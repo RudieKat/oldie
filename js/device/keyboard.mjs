@@ -5,22 +5,23 @@ import { IO_WRITE } from "../bus/io.mjs";
 import { IO_RW } from "../bus/io.mjs";
 import { IOStream } from "../bus/io.mjs";
 import { Register } from "../cpu/cpu.mjs";
+import {RS323TerminalDevice} from "../io/io2.mjs";
 
-export class TTYKeyboard extends IOBus {
+export class TTYKeyboard extends RS323TerminalDevice {
     constructor() {
-        super(IO_RW);
+        super(9600,10);
         this._capture = new IOStream(IO_WRITE);
         this._capture.connect(this);
         Register.IN.connect(this);
     }
     get capture(){return this._capture;}
     write_to_stream(b) {
-        let upper = b>>8;
-        b = b&0xff;
-        if (upper>0) {
-            super.write_to_stream(upper);
+
+        if (b>0xff) {
+            this.terminal.writeWord(b);
+        } else {
+            this.terminal.write(b);
         }
-        super.write_to_stream(b);
-        this._outbuf.push(this._inbuf.shift());
+
     }
 }

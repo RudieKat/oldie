@@ -53,7 +53,7 @@ export class RT11 extends RS232 {
         return this.read_bytes(f[0]*RT11_BLOCK, f[0].length);
     }
     initialized() {
-        return this._data[0] == 0xFE;
+        return this._data[0] === 0xFE;
     }
     read_byte(addr) {
         return this._data[addr];

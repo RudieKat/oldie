@@ -1,5 +1,5 @@
 /*jshint esversion:6*/
-import { IO_READ, IO_WRITE, IOBus } from "../bus/io.mjs";
+import {IO_DTE, IO_READ, IO_WRITE, IOBus} from "../bus/io.mjs";
 import { IO_RW } from "../bus/io.mjs";
 
 
@@ -48,6 +48,12 @@ export class RS232 {
     write_char(c) {
         this.write(c.charCodeAt(0));
     }
+    get write_available(){
+        return this._transmit.length > 0;
+    }
+    get transmittable() {
+        return this._transmit.length ;
+    }
     transmit() {
         if (this._transmit.length >0) {
             return this._transmit.shift();
@@ -63,8 +69,8 @@ export class RS232 {
     receive(v) {
         //clamp the value
         v = Math.min(1,Math.max(v,0));
-        if (this._bitsread == 0) {
-            if (v == 1) {
+        if (this._bitsread === 0) {
+            if (v === 1) {
                 throw new Error("Start bit not 0");
             }
             this._bitsread++;
@@ -74,7 +80,7 @@ export class RS232 {
                 this._bitsread++;
                 this._parity_counter += Math.abs(v-1);
             } else if (this._bitsread> (this._char + this._parity%2)) {
-                if (v == 0) {
+                if (v === 0) {
                     throw new Error("Stop bit not 1");
                 }
                 this._bitsread++;
@@ -85,7 +91,7 @@ export class RS232 {
                     throw new Error("Parity error");
                 }
             }
-            if (this._bitsread == this._frame) {
+            if (this._bitsread === this._frame) {
                 this._frames_available++;
                 this._receive.push(this._framebuf);
                 this._framebuf = 0;   
@@ -127,10 +133,10 @@ export class RS232 {
                 p = "1";
                 break;
             case PARITY_ODD:
-                p = "" + (bits.split("").filter(ch => ch == "0").length%2);
+                p = "" + (bits.split("").filter(ch => ch === "0").length%2);
                 break;
             case PARITY_EVEN:
-                p = "" + ((bits.split("").filter(ch => ch == "0").length+1)%2);
+                p = "" + ((bits.split("").filter(ch => ch === "0").length+1)%2);
                 break;
         }
         bits = "0" + bits + p + "1" + (this._stop_bits>1?"1":"");
@@ -142,13 +148,17 @@ export class RS232 {
     chars_to_bits(ch) {
         return ch.split("").map(ch => this.char_to_bits(ch)).reduce((a,b) => [...a,...b]);
     }
-    get bus() {
-        return new RS232Bus(IO_RW,this);
+    get readBus() {
+        return new RS232Bus(IO_READ,this);
     }
+    get writeBus() {
+        return new RS232Bus(IO_WRITE,this);
+    }x
 }
 
+
 export class RS232Bus extends IOBus {
-    constructor(io_mode, device) {
+    constructor(io_mode,device) {
         super(io_mode);
         this._rs232 = device;
     }
@@ -171,7 +181,7 @@ export class RS232Bus extends IOBus {
         this.output = outstream;
     }
     write_to_stream(w) {
-        if ((w&0xFF00) == 0x1B00) {
+        if ((w&0xFF00) === 0x1B00) {
             super.write_to_stream(0x1B);
         }
         super.write_to_stream(w);

@@ -13,29 +13,33 @@
         <script src="./codemirror/mode/ultra/ultra.js"></script>
         <script src="./codemirror/mode/javascript/javascript.js"></script>
         <script src="./js/cpu/common.mjs" type="module"></script>
-        <script src="./js/bus/io.mjs" type="module"></script>
+        <!--<script src="./js/bus/io.mjs" type="module"></script>!-->
         
         <script src="./js/cpu/index.mjs" type="module"></script>
         <script src="./js/parser.mjs" type="module"></script>
         <script src="./js/device/vt52.mjs" type="module"></script>
         <script src="./js/device/rt11.mjs" type="module"></script>
         <script src="./js/device/keyboard.mjs" type="module"></script>
+        <!--<script src="./js/device/commport.mjs" type="module"></script>!-->
+        <script src="./js/io/io2.mjs" type="module"></script>
         <script src="./js/ui/buttons.mjs" type="module"></script>
     <style>
         
     </style>
     <script type="module">
         import {FileManager,fm,fs} from './js/file.mjs';
-        import {IOStream, IOBus, DevNullBus, devnull} from './js/bus/io.mjs';
+        import {IO_DTE,IO_DCE, IO_WRITE, IO_READ, IO_NONE, IOStream, IOBus, DevNullBus, devnull} from './js/bus/io.mjs';
         import {CPU,cpu,LineAware,Memory,Operation,Flag,Register} from './js/cpu/index.mjs';
         import {Hexer8,Hexer16} from './js/cpu/common.mjs';
         import {ControlButton,ValueDisplay} from './js/ui/buttons.mjs';
         import {SyntaxError,parse} from './js/parser.mjs';
         window.fs = fs;
-        import {RS232Bus} from './js/device/rs232.mjs';
+        import {RS323Connection} from './js/io/io2.mjs';
         import {TTYKeyboard} from './js/device/keyboard.mjs';
         import {VT52} from './js/device/vt52.mjs';
         import {RT11} from './js/device/rt11.mjs';
+        import {CommPort} from "./js/device/commport.mjs";
+
         let editor = null;
         let parseOn = true;
         let currentFile = null;
@@ -189,6 +193,7 @@
             let ram = document.getElementById("ram");
             let files = document.getElementById("file");
             let ramOut = [];
+
             for (let i = 0; i < 1024;i++) {
                 let r = document.createElement("tr");
                 let tda = document.createElement("td");
@@ -240,8 +245,13 @@
                     ramOut[i].style.visibility='visible'
                 }
             };
+            let keyboardConnection = new RS323Connection();
             let vt = new VT52(9600,2);
+            //vt.modem = connection.modem;
+
+            Register.IN.connect(keyboardConnection);
             let keyboard = new TTYKeyboard();
+            keyboard.connect(keyboardConnection);
             let keyboard_input = document.getElementById("keyboard-input");
             let cmd = false;
             keyboard_input.onkeyup = (ev) => {
@@ -283,6 +293,7 @@
                 }
             });
             let vtb = vt.bus;
+
             window.screen_toggle = () => {
                 if (vt.active) {
                     vt.end();
@@ -297,7 +308,17 @@
             }
             //let vt_bus = vt.bus;
             //Register.IN.connect(vt_bus);
-            Register.OUT.connect(vtb);
+            /*let cp = CommPort.Registry["COM01"]
+            cp.on("ERROR",(e) => {
+                console.log("Error in " + cp.name + ": " + e);
+            })*/
+            //let outBus = cp.writeBus;//new RS232Bus(IO_WRITE,IO_DTE);
+            let cpuConnect = new RS323Connection();
+            Register.OUT.connect(cpuConnect);
+            vt.connect(cpuConnect);
+            //vtb.port.connect(outBus.port);
+            //cp.bus = outBus;
+
             let vt_out = document.getElementById("terminal");
             let block = '\u2588';
             let blink = 0;

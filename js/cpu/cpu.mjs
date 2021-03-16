@@ -5,8 +5,9 @@ import {Label} from './label.mjs';
 import {Symbols} from './symbol.mjs';
 import {Hexer16,Binary16} from './common.mjs';
 import { LineAware } from './common.mjs';
-import { IO_READ, IO_WRITE, IOStream } from '../bus/io.mjs';
-import { devnull } from '../bus/io.mjs';
+//import { IO_READ, IO_WRITE, IOStream } from '../bus/io.mjs';
+import { DCE,DTE,RS323TerminalDevice,RS323ModemDevice } from '../io/io2.mjs';
+//import { devnull } from '../bus/io.mjs';
 export class Reporter {
     constructor(type) {
         this._listener = null;
@@ -211,8 +212,14 @@ class IORegister extends Register {
     constructor(type) {
         super(type);
         this._device = 0;
-        this._stream = new IOStream(type === Register.IN_T?IO_READ:IO_WRITE);
-        this.connect(devnull);
+        this._stream = null;
+        if (type === Register.IN_T) {
+            this._stream = new RS323ModemDevice(9600,10);
+        } else {
+            this._stream = new RS323TerminalDevice(9600,10);
+        }
+        //new (type === Register.IN_T?IO_READ:IO_WRITE);
+        //this.connect(devnull);
     }
     connect(bus) {
         this.stream.connect(bus);
