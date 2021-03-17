@@ -5,7 +5,7 @@ import {Value,DirectValue,IndirectValue,SymbolValue,LabelValue} from './value.mj
 import {Operation} from './op.mjs';
 import {Memory} from './ram.mjs';
 import {CPU,Flag,Register} from './cpu.mjs';
-import {Constant,Symbol,SymbolBuffer,Symbols} from './symbol.mjs';
+import {Constant,Symbol,SymbolBuffer,IOFile, InputSymbol, DiskIO, Symbols} from './symbol.mjs';
 import {Label} from './label.mjs';
 
 const cpu = CPU.cpu();
@@ -19,6 +19,9 @@ export {
     Constant,
     Symbol,
     SymbolBuffer,
+    InputSymbol,
+    IOFile,
+    DiskIO,
     Symbols,
     SymbolValue,
     Operation,

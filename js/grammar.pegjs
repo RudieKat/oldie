@@ -1,19 +1,31 @@
 
+
 Systen = LineComment* ConstantsBlock? BufferBlock? DataBlock? Expression {return cpu.process();}
 LineComment
  = head: _ Comment? _ [\n\r] { LineAware.line++;}
+DiskIOBlock
+ = head:_".diskio" _ EOL* (FileEntry EOL LineComment*)_
+BufferBlock
+ = head:_".buffer" _ EOL* (BufferEntry EOL LineComment*)*_
 DataBlock
  = head:_".data" _ EOL LineComment* (DataEntry EOL LineComment*)*_ 
 ConstantsBlock
  = head:_".const" _ EOL* (ConstantsEntry EOL LineComment*)*_
-BufferBlock
- = head:_".buffer" _ EOL* (BufferEntry EOL LineComment*)*_
+
+
+FileEntry
+ = _ symbol:".file" _ "'" file: ([^\']*) _ "'"  _ EOL
+        size: DataEntry EOL open: DataEntry EOL  read: InputSymbol EOL write: DataEntry EOL {
+          return new DiskIO(new IOFile(file.join("")),size,open, read,write);
+        }
 ConstantsEntry
  = _ symbol:Symbol _ int:Integer {return new Constant(symbol,int);}
+InputSymbol
+ = _ symbol:"read" _ int:Integer {return new InputSymbol("read",int);}
 DataEntry
  = _ symbol:Symbol _ int:Integer {return new Symbol(symbol,int);}
 BufferEntry
- = _ symbol:Symbol _ values: (IntegerBuffer / StringBuffer) {return new SymbolBuffer(symbol,values);} 
+ = _ symbol:Symbol _ values: (IntegerBuffer / StringBuffer ) {return new SymbolBuffer(symbol,values);}
 Symbol "symbol"
  = "."  ss:SymbolString {return ss}
 Expression "expression"
@@ -67,7 +79,7 @@ SymbolString "symbol_string"
 
     return values.split("").map(c => c.charCodeAt(0));}
 IntegerBuffer "intbuf"
-  = _? head: '\[' values: (_? ','? _? @Integer)* _? tail: '\]' { 
+  = _? head: '\[' values: (_? ','? _? Integer)* _? tail: '\]' {
     console.log(head);
     console.log(values);
     console.log(tail);

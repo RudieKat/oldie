@@ -6,8 +6,8 @@ import { Register,Reporter,Flag,CPU } from './cpu.mjs';
 export class Memory extends Reporter{
     constructor(size) {
         super("RAM");
-        this._size = size || 1024;
-        this._data = new Array(1020).fill(0);
+        this._size = size || 0xFFFF;
+        this._data = new Array((this._size-4)).fill(0);
         this._protected = [0,0,0,0];
         this._volatile = 0;
         this._opStart =0;

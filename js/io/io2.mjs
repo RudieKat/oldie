@@ -82,7 +82,7 @@ export class RS323ModemDevice {
     get read_available() {return this._modem._buffer.length;}
     read() {
         if (this.modem) {
-            this.modem.read();
+            return this.modem.read();
         }
     }
 }

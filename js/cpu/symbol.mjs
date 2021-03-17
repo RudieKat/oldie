@@ -71,6 +71,84 @@ export class SymbolBuffer extends Symbol {
     }
     get length() {return this._values.length;}
 }
+export class IOFile extends Symbol {
+    constructor(name) {
+        super('file',name);
+        this._name = name;
+        this._data = [];
+        this._eventListener = null;
+        this._position = 0;
+    }
+    load() {
+        let x = new XMLHttpRequest();
+        x.open("GET",name)
+        x.onload = () => {
+            if (x.status===200) {
+
+                this._data = x.responseText.split("").map(c=> c.codePointAt(0));
+                this._eventListener.loaded(this._data.length);
+                console.log(x.responseText);
+            } else {
+                alert("Failed to load file");
+                this._eventListener.error(x.status);
+            }
+        }
+        x.send();
+    }
+    get next() {
+        if (this._position === this._data.length) {
+            this._eventListener.close();
+            return -1;
+        }
+        return this._data[this._position++];
+    }
+    set listener(e) {this._eventListener = e;}
+    get value() {
+        return 0;
+    }
+    get raw() {
+        return 0;
+    }
+
+
+}
+export class InputSymbol extends Symbol {
+    constructor(name,value) {
+        super(name,value);
+        this._src = null;
+    }
+    set src(c) {this._src = c;}
+    get src() {return this._src;}
+    get value() {
+        if (this.src !== null) {
+            return this.src.next;
+        }
+    }
+}
+export class DiskIO {
+    constructor(file,size, open, read, write) {
+        this._file = file;
+        this._file.listener(this);
+        this._size = size;
+        this._open = open;
+        this._read = read;
+        this._write = write;
+        this._file.load();
+    }
+    get file() {return this._file;}
+    get size() {return this._size;}
+    get open() {return this._open;}
+    get read() {return this._read;}
+    get write() {return this._write;}
+    close() {
+        this.open.value = 0;
+    }
+    loaded(sizeInBytes) {
+        this.size.value = sizeInBytes;
+        this.open.value = 1;
+
+    }
+}
 class SymbolTable {
     constructor() {
         this._symbols = [];

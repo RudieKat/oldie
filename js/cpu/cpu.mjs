@@ -158,14 +158,14 @@ export class Register extends Reporter{
     }
     get fv() {return this._last;}
     set fv(v) {
-        this._last = v;
-        this._mem.wp(this._type,v);
+        this._last = v||0;
+        this._mem.wp(this._type,v||0);
         this.updated();
     }
     get value() {return this._last;}
     set value(v) {
-        this._mem.wp(this._type,v);
-        this._last = v;
+        this._mem.wp(this._type,v||0);
+        this._last = v||0;
         this.updated();
     }
     get latest() {return this._last;}
@@ -409,7 +409,7 @@ export class CPU extends Reporter{
         let opc = op&0xC000;
         op-=opc;
         let c = Flag.C.f;
-        if (Register.I.fv === this.mem.opStart) {
+        if ( this._cycles  && Register.I.fv === this.mem.opStart) {
             Register.OUT.fv = Register.R.fv;
             Register.R.fv = Register.IN.fv;
         }

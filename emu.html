@@ -16,7 +16,7 @@
         <!--<script src="./js/bus/io.mjs" type="module"></script>!-->
         
         <script src="./js/cpu/index.mjs" type="module"></script>
-        <script src="./js/parser.mjs" type="module"></script>
+        <script src="./js/test.mjs" type="module"></script>
         <script src="./js/device/vt52.mjs" type="module"></script>
         <script src="./js/device/rt11.mjs" type="module"></script>
         <script src="./js/device/keyboard.mjs" type="module"></script>
@@ -32,7 +32,7 @@
         import {CPU,cpu,LineAware,Memory,Operation,Flag,Register} from './js/cpu/index.mjs';
         import {Hexer8,Hexer16} from './js/cpu/common.mjs';
         import {ControlButton,ValueDisplay} from './js/ui/buttons.mjs';
-        import {SyntaxError,parse} from './js/parser.mjs';
+        import {SyntaxError,parse} from './js/test.mjs';
         window.fs = fs;
         import {RS323Connection} from './js/io/io2.mjs';
         import {TTYKeyboard} from './js/device/keyboard.mjs';
@@ -179,11 +179,12 @@
                 }
                 
             }
-            let lines = Array.from(document.querySelectorAll(".CodeMirror-linenumber")).filter(ll => ll.innerText.length>8);
+
+            /*let lines = Array.from(document.querySelectorAll(".CodeMirror-linenumber")).filter(ll => ll.innerText.length>8);
             lines.forEach(ll => {
                 let addr = parseInt(ll.innerText.substring(2,4),16);
                 ll.innerText = Hexer16(addr) + " " + Hexer16(Memory.read(addr));
-            });
+            });*/
             
             document.getElementById("register-r").innerText = "R: " + Hexer16(Register.R.value);
             
@@ -285,7 +286,7 @@
                     }
                 }
             };
-            vt.update_at_interval(5);
+            vt.update_at_interval(20);
             vt.on('ERROR',(e) => {
                 if (e) {
                     vt.active = false;
@@ -301,7 +302,7 @@
                     document.getElementById("screen-toggle").innerHTML="<strong>Screen ON</strong>";
                 } else {
                     Register.OUT.connect(vtb);
-                    vt.update_at_interval(5); 
+                    vt.update_at_interval(20);
                     document.getElementById("screen-toggle").innerHTML="<strong>Screen OFF</strong>";
                 }
                 
@@ -437,7 +438,7 @@
                 /*if (cpu.running) {
                     value = value==1 || value;
                     vt.rcv_bits(vt.bytes_to_bits([0x1b,0x59,0xC,0x47]));
-                    vt.rcv_bits(vt.chars_to_bits(value?"TRUE":"FALS"));
+                    vt.rcv_bits(vt.chars_to_bits(value?"TRUE":"FALSE"));
                 }*/
             }
             window.editor.on("gutterClick", function(cm, n) {
@@ -523,6 +524,14 @@
     .op_sav 0x8000
     .op_jcz 0xC000
     .reserve_mutable 0x20
+
+.diskio
+    .file '/data/txt/test_globe.txt'
+    .size 0
+    .open 0
+    .read 0
+    .write 0
+
 ; Mutable variables
 .data
     .tmp 0x0
@@ -531,9 +540,7 @@
 ; back to zero, ready to roll
 ; MAIN
 main:
-    add tmp
-    add one
-    sav tmp
+    add read
     jcz main
 end:
 nand 0
