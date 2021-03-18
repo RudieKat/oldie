@@ -60,7 +60,7 @@ body {
     color:#313335;
 }
 .screen {
-    font-family: VT323, monospace;
+    font-family: monospace;
     font-size:20px;
     font-variant-ligatures: none;
     background-color: #282828;

@@ -1,6 +1,8 @@
 /*jshint esversion:6*/
 import { Memory } from "./ram.mjs";
+import {Register} from "./cpu.mjs";
 import { Hexer16,LineAware } from './common.mjs';
+import { RS323TerminalDevice} from "../io/io2.mjs";
 const reserved = [
     "add","sav","nand", "jcz","R","Z","C","S","0","A","I"
 ];
@@ -81,13 +83,14 @@ export class IOFile extends Symbol {
     }
     load() {
         let x = new XMLHttpRequest();
-        x.open("GET",name)
+        x.open("GET",this._name)
         x.onload = () => {
             if (x.status===200) {
 
                 this._data = x.responseText.split("").map(c=> c.codePointAt(0));
                 this._eventListener.loaded(this._data.length);
                 console.log(x.responseText);
+                console.log(this._data.map(e => "0x" + (e&0xFF).toString(16)));
             } else {
                 alert("Failed to load file");
                 this._eventListener.error(x.status);
@@ -101,6 +104,9 @@ export class IOFile extends Symbol {
             return -1;
         }
         return this._data[this._position++];
+    }
+    read() {
+        return this.next();
     }
     set listener(e) {this._eventListener = e;}
     get value() {
@@ -125,10 +131,11 @@ export class InputSymbol extends Symbol {
         }
     }
 }
-export class DiskIO {
+export class DiskIO extends RS323TerminalDevice {
     constructor(file,size, open, read, write) {
+        super(9600,10);
         this._file = file;
-        this._file.listener(this);
+        this._file.listener = this;
         this._size = size;
         this._open = open;
         this._read = read;
@@ -141,13 +148,17 @@ export class DiskIO {
     get read() {return this._read;}
     get write() {return this._write;}
     close() {
-        this.open.value = 0;
+        this.open._value = 0;
     }
     loaded(sizeInBytes) {
-        this.size.value = sizeInBytes;
-        this.open.value = 1;
+        this.size._value = sizeInBytes;
+        this.read.src = this.file;
+        this.connect = Register.IN.stream.connection;
+        this.connect.modem._buffer = this.file._data;
+        //this.stream(this.file);
+        this.open._value = 1;
 
-    }
+    }x
 }
 class SymbolTable {
     constructor() {

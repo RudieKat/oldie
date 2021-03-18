@@ -361,10 +361,10 @@ export class CPU extends Reporter{
     execSlow(opsPerSec) {
         this._cycles = 0;
         opsPerSec = opsPerSec || 10;
-        let msPerCycle = (10000/opsPerSec)>>0;
+        let msPerCycle = (30000/opsPerSec)>>0;
         let op = null;
         let pos = Register.I.fv;
-        if (msPerCycle< 5) {
+        if (msPerCycle< 3) {
             console.log("Not enough yield time");
             return false;
         }
@@ -410,8 +410,13 @@ export class CPU extends Reporter{
         op-=opc;
         let c = Flag.C.f;
         if ( this._cycles  && Register.I.fv === this.mem.opStart) {
-            Register.OUT.fv = Register.R.fv;
-            Register.R.fv = Register.IN.fv;
+            if (Register.IN.stream.connected) {
+                Register.OUT.fv = Register.IN.fv;
+                Register.R.fv = Register.IN.latest;
+            } else {
+                Register.OUT.fv = Register.R.fv;
+                Register.R.fv = Register.IN.fv;
+            }
         }
         Register.I.fv +=1;
         switch(opc) {

@@ -1,6 +1,6 @@
 
 
-Systen = LineComment* ConstantsBlock? BufferBlock? DataBlock? Expression {return cpu.process();}
+Systen = LineComment* ConstantsBlock? DiskIOBlock? BufferBlock? DataBlock? Expression {return cpu.process();}
 LineComment
  = head: _ Comment? _ [\n\r] { LineAware.line++;}
 DiskIOBlock
@@ -21,7 +21,7 @@ FileEntry
 ConstantsEntry
  = _ symbol:Symbol _ int:Integer {return new Constant(symbol,int);}
 InputSymbol
- = _ symbol:"read" _ int:Integer {return new InputSymbol("read",int);}
+ = _ symbol:".read" _ int:Integer {return new InputSymbol("read",int);}
 DataEntry
  = _ symbol:Symbol _ int:Integer {return new Symbol(symbol,int);}
 BufferEntry

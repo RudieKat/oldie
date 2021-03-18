@@ -14,7 +14,6 @@ function peg$subclass(child, parent) {
 }
 
 function peg$SyntaxError(message, expected, found, location) {
-
   this.message  = message;
   this.expected = expected;
   this.found    = found;
@@ -68,7 +67,7 @@ peg$SyntaxError.buildMessage = function(expected, found) {
     return s
       .replace(/\\/g, '\\\\')
       .replace(/"/g,  '\\"')
-      .replace(/0/g, '\\0')
+      .replace(/\0/g, '\\0')
       .replace(/\t/g, '\\t')
       .replace(/\n/g, '\\n')
       .replace(/\r/g, '\\r')
@@ -82,7 +81,7 @@ peg$SyntaxError.buildMessage = function(expected, found) {
       .replace(/\]/g, '\\]')
       .replace(/\^/g, '\\^')
       .replace(/-/g,  '\\-')
-      .replace(/0/g, '\\0')
+      .replace(/\0/g, '\\0')
       .replace(/\t/g, '\\t')
       .replace(/\n/g, '\\n')
       .replace(/\r/g, '\\r')
@@ -165,8 +164,8 @@ function peg$parse(input, options) {
                 return new DiskIO(new IOFile(file.join("")),size,open, read,write);
               },
       peg$c19 = function(symbol, int) {return new Constant(symbol,int);},
-      peg$c20 = "read",
-      peg$c21 = peg$literalExpectation("read", false),
+      peg$c20 = ".read",
+      peg$c21 = peg$literalExpectation(".read", false),
       peg$c22 = function(symbol, int) {return new InputSymbol("read",int);},
       peg$c23 = function(symbol, int) {return new Symbol(symbol,int);},
       peg$c24 = function(symbol, values) {return new SymbolBuffer(symbol,values);},
@@ -424,7 +423,7 @@ function peg$parse(input, options) {
   }
 
   function peg$parseSysten() {
-    var s0, s1, s2, s3, s4, s5;
+    var s0, s1, s2, s3, s4, s5, s6;
 
     s0 = peg$currPos;
     s1 = [];
@@ -439,21 +438,30 @@ function peg$parse(input, options) {
         s2 = null;
       }
       if (s2 !== peg$FAILED) {
-        s3 = peg$parseBufferBlock();
+        s3 = peg$parseDiskIOBlock();
         if (s3 === peg$FAILED) {
           s3 = null;
         }
         if (s3 !== peg$FAILED) {
-          s4 = peg$parseDataBlock();
+          s4 = peg$parseBufferBlock();
           if (s4 === peg$FAILED) {
             s4 = null;
           }
           if (s4 !== peg$FAILED) {
-            s5 = peg$parseExpression();
+            s5 = peg$parseDataBlock();
+            if (s5 === peg$FAILED) {
+              s5 = null;
+            }
             if (s5 !== peg$FAILED) {
-              peg$savedPos = s0;
-              s1 = peg$c0();
-              s0 = s1;
+              s6 = peg$parseExpression();
+              if (s6 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c0();
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
             } else {
               peg$currPos = s0;
               s0 = peg$FAILED;
@@ -1135,9 +1143,9 @@ function peg$parse(input, options) {
     s0 = peg$currPos;
     s1 = peg$parse_();
     if (s1 !== peg$FAILED) {
-      if (input.substr(peg$currPos, 4) === peg$c20) {
+      if (input.substr(peg$currPos, 5) === peg$c20) {
         s2 = peg$c20;
-        peg$currPos += 4;
+        peg$currPos += 5;
       } else {
         s2 = peg$FAILED;
         if (peg$silentFails === 0) { peg$fail(peg$c21); }
@@ -2464,9 +2472,6 @@ function peg$parse(input, options) {
     return s0;
   }
 
-
-
-
   peg$result = peg$startRuleFunction();
 
   if (peg$result !== peg$FAILED && peg$currPos === input.length) {
@@ -2485,8 +2490,6 @@ function peg$parse(input, options) {
     );
   }
 }
-
-
 export {
   peg$SyntaxError as SyntaxError,
   peg$parse as parse

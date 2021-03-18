@@ -317,6 +317,8 @@
             let cpuConnect = new RS323Connection();
             Register.OUT.connect(cpuConnect);
             vt.connect(cpuConnect);
+            let diskConnect = new RS323Connection();
+            Register.IN.connect(diskConnect);
             //vtb.port.connect(outBus.port);
             //cp.bus = outBus;
 
@@ -508,7 +510,7 @@
             </td>
             <td>
                 <div id='cm-buttons' class="CodeMirror-buttonsPanel">
-                    <input type="number" value="10"  class='CodeMirror-reporter' id="cycle-counter"/>
+                    <input type="number" value="4000"  class='CodeMirror-reporter' id="cycle-counter"/>
                 </div>
         <textarea id="code">
 ; Unmutable
@@ -526,7 +528,7 @@
     .reserve_mutable 0x20
 
 .diskio
-    .file '/data/txt/test_globe.txt'
+    .file '/data/txt/globe_mod.txt'
     .size 0
     .open 0
     .read 0
@@ -540,7 +542,7 @@
 ; back to zero, ready to roll
 ; MAIN
 main:
-    add read
+    ;add read
     jcz main
 end:
 nand 0

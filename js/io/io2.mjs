@@ -52,7 +52,7 @@ export class RS323Port {
     }
     readWord() {
         if (this._buffer.length > 1) {
-            return (this._buffer.shift()<<8 |this._buffer.shift())
+            return (this._buffer.shift()<<8)  + this._buffer.shift();
         }
         return -1;
     }
@@ -76,13 +76,19 @@ export class RS323ModemDevice {
         this._modem = connection.modem;
     }
     set connection(m) {this._modem = m;}
-    get connection() {return this._modem != null;}
+    get connected() {return this._modem != null;}
+    get connection() {return this._connection;}
     get modem() {return this._modem;}
     get available() {return this.read_available}
     get read_available() {return this._modem._buffer.length;}
     read() {
         if (this.modem) {
             return this.modem.read();
+        }
+    }
+    readWord() {
+        if (this.modem) {
+            return this.modem.readWord();
         }
     }
 }
@@ -92,14 +98,20 @@ export class RS323TerminalDevice {
         this._limit = limit;
         this._terminal = null;
         this._connection = null;
+        this._stream = null;
     }
     connect(connection) {
         this._connection = connection;
         this._terminal = connection.terminal;
     }
+    set stream(s) {this._stream = s;}
+    get stream(){return this._stream;}
     set connection(terminal) {this._terminal = terminal;}
     get connection() {return this._terminal != null;}
     get terminal() {return this._terminal;}
+    get next() { if (this.stream!==null) {
+        this.stream.read();
+    }}
     write(v) {
         if (this._terminal) {
             this.terminal.write(v);
