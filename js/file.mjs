@@ -47,7 +47,8 @@ export class FileManager {
     addFile(name,data) {
         let id = uuid();
         localStorage.setItem(id,data);
-        this._files.files[id] = {id:id,created:new Date().toUTCString(),name:name};
+        let d = new Date();
+        this._files.files[id] = {id:id,created:d.toLocaleDateString() + " " + d.toLocaleTimeString() ,name:name};
         this._files.files[id].updated = this._files.files[id].created;
         this._files.dirty = true;
         this.save();
@@ -55,7 +56,8 @@ export class FileManager {
     }
     update(id,data) {
         localStorage.setItem(id,data);
-        this._files.files[id].updated = new Date().toUTCString();
+        let d = new Date();
+        this._files.files[id].updated = d.toLocaleDateString() + " " + d.toLocaleTimeString();
         this._files.dirty = true;
         this.save();
         return this._files.files[id];

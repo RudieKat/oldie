@@ -1,0 +1,14 @@
+[
+  {
+    "name": "basics.asm",
+    "description": "The basics. Shocking."
+  },
+  {
+    "name": "enchilada.asm",
+    "description": "The whole enchilada. More or less."
+  },
+  {
+    "name": "minimal.asm",
+    "description": "Just the facts Ma'asm"
+  }
+]

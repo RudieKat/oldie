@@ -35,6 +35,13 @@
     ; back it's probably more useful to use Run slow or to step but I haven't
     ; bothered figuring out how to get CodeMirror to scroll to the current
     ; line yet so that will require you to do some scrolling. Or a lot of it.
+    ; UPDATE: Ok fine, I fixed it. General commentary to follow but basically
+    ; this would typically be an "import" if you will that basically turns
+    ; a very sparse 4 instruction set into a far more capable one. While it's
+    ; not immediately obvious the ioex passes the R value to the screen but more
+    ; importantly, it allows for direct writes to a memory mapped block device
+    ; of the type found in the computers that were state of the art back then.
+    ; But more on that in a browser near you soon.
     .data
     	.truejmp 0
         .falsejmp 0
