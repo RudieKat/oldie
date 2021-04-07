@@ -622,7 +622,12 @@
     ; Note that this particular program does
     ; something very useful...
     ; change the value of .tmp2 and see
-    ; what happens on the stack
+    ; what happens on the stack. Don't know where you can see the stack?
+    ; On the right side of the screen, above the file listing there's a
+    ; button labeled stack. That's it. Since RUN doesn't report the state
+    ; back it's probably more useful to use Run slow or to step but I haven't
+    ; bothered figuring out how to get CodeMirror to scroll to the current
+    ; line yet so that will require you to do some scrolling. Or a lot of it.
     .data
     	.truejmp 0
         .falsejmp 0
