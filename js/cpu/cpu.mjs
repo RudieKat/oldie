@@ -6,7 +6,16 @@ import {Symbols} from './symbol.mjs';
 import {Hexer16,Binary16} from './common.mjs';
 import { LineAware } from './common.mjs';
 //import { IO_READ, IO_WRITE, IOStream } from '../bus/io.mjs';
-import { DCE,DTE,RS323TerminalDevice,RS323ModemDevice } from '../io/io2.mjs';
+import {
+    DCE,
+    DTE,
+    RS323TerminalDevice,
+    RS323ModemDevice,
+    primaryInput,
+    primaryOutput,
+    io_ex,
+    RAMBuffer
+} from '../io/io2.mjs';
 //import { devnull } from '../bus/io.mjs';
 export class Reporter {
     constructor(type) {
@@ -152,9 +161,9 @@ export class Register extends Reporter{
         this._mem = Memory.mem();
         this._last = 0;
         
-        setTimeout(()=> {
+        /*setTimeout(()=> {
             this.value = 0;
-        },5);
+        },50);*/
     }
     get fv() {return this._last;}
     set fv(v) {
@@ -215,12 +224,20 @@ class IORegister extends Register {
         this._stream = null;
         if (type === Register.IN_T) {
             this._stream = new RS323ModemDevice(9600,10);
+            this._stream.getInputType = ()=>{
+                return primaryInput;
+            }
         } else {
             this._stream = new RS323TerminalDevice(9600,10);
+            this._stream.getOutputType = ()=>{
+                return primaryOutput;
+            }
         }
+        io_ex.register(this._stream);
         //new (type === Register.IN_T?IO_READ:IO_WRITE);
         //this.connect(devnull);
     }
+
     connect(bus) {
         this.stream.connect(bus);
     }
@@ -338,6 +355,7 @@ export class CPU extends Reporter{
     }
     process(){
         this.mem.process(this._ops);
+        RAMBuffer.Reset();
         return this;
     }
     get instruction() {
@@ -345,12 +363,7 @@ export class CPU extends Reporter{
     }
     get running() {return this._running;}
     step() {
-        let pos = Register.I.value;
-        if (pos === 0) {
-            this.process();
-            this.step();
-            return;
-        }
+        let pos = this.instruction;
         let op = Memory.read(pos);
         this.fexec_op(op);
         this._cycles++;
@@ -364,7 +377,7 @@ export class CPU extends Reporter{
         let msPerCycle = (30000/opsPerSec)>>0;
         let op = null;
         let pos = Register.I.fv;
-        if (msPerCycle< 3) {
+        if (msPerCycle< 1) {
             console.log("Not enough yield time");
             return false;
         }

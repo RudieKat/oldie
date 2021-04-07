@@ -39,6 +39,6 @@ Label.reset = () => {
 };
 Label.resolve = (n) => {
     let lbl = Label.reg.get(n);
-    console.log(lbl);
+    //console.log(lbl);
     return lbl;
 };

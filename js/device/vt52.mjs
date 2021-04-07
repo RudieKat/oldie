@@ -1,5 +1,5 @@
 /*jshint esversion:6*/
-import {PARITY_NONE,PARITY_MARK,PARITY_EVEN,RS323ModemDevice} from '../io/io2.mjs';
+import {PARITY_NONE, PARITY_MARK, PARITY_EVEN, RS323ModemDevice, primaryDisplay, io_ex} from '../io/io2.mjs';
 export const VT_CURSOR_UP=0x1B41; // A
 export const VT_CURSOR_DOWN=0x1B42; // B
 export const VT_CURSOR_RIGHT=0x1B43; // C
@@ -51,11 +51,38 @@ export class VT52 extends RS323ModemDevice {
         this._scroll = 0;
         this._errorHandler = null;
         this._bus = this.readBus;
+        io_ex.register(this);
         
     }
+    getInputType() {
+        return primaryDisplay;
+    }
+    updateFrame(self) {
+        try {
+            let av = Math.max(16,self.available);
+            for (;av>0;av--) {
+                try {
+                    self.update();
+                } catch(err) {}
+            }
+        } catch (e) {
+            if (self._errorHandler) {
+                self._errorHandler(e);
+            }
+        }
+        if (self._pthread !== null) {
+            window.requestAnimationFrame(() => {
+                self.updateFrame(self);
+            });
+        }
+    }
     update_at_interval(ms) {
-        const errors = this._errorHandler;
-        this._pthread = setInterval(() => {
+
+        this._pthread = "";
+        this._pthread = window.requestAnimationFrame(()=> {
+            this.updateFrame(this);
+        });
+        /*this._pthread = setInterval(() => {
             try {
                 let av = Math.min(10,this.available);
                 for (;av>0;av--) {
@@ -66,7 +93,7 @@ export class VT52 extends RS323ModemDevice {
                     errors(e);
                 }
             }
-        }, ms);
+        }, ms);*/
     }
     get bus(){return this._bus;}
     on(e,h) {
@@ -75,10 +102,17 @@ export class VT52 extends RS323ModemDevice {
         }
     }
     end() {
-        clearInterval(this._pthread);
-        this._pthread =null;
+        if (this._pthread !== null) {
+            window.cancelAnimationFrame(this._pthread);
+            this._pthread = null;
+        }
     }
     get active() {return this._pthread != null;}
+    set active(a) {
+        if (this._pthread !== null && !a) {
+            this._pthread = null;
+        }
+    }
     graphics_char(b) {
         b = b>=0x1b00?b&0xff:b;
         return _graphics_chars[b];
@@ -109,7 +143,7 @@ export class VT52 extends RS323ModemDevice {
     }
     update() {
         if (this.read_available) {
-            let ch = this.read();
+            let ch = this.read()[1];
             if (this.command_mode) {
                 //console.log("CMD: " + ch.toString(16));
                 if (this.command_length===2) {
@@ -174,7 +208,7 @@ export class VT52 extends RS323ModemDevice {
                         break;
                     default:
                         this._command_mode = false;
-                        throw new Error("BAD COMMAND: " + cmd.toString(16));
+                        throw new CommandError(cmd);
                 }
                 this._command_mode = false;
                 return;
@@ -256,6 +290,29 @@ export class VT52 extends RS323ModemDevice {
             let out = this._row_buffers[i].filter(c => c > 0).map(c => String.fromCharCode(c)).join("");
             console.log(out);
         }
+    }
+
+}
+export const VT52_ERROR_UNKNOWN=0;
+export const VT52_ERROR_CMD=1;
+
+export class VT52Error extends Error {
+    constructor(msg) {
+        super("VT52: " + msg);
+
+    }
+    get type() {return 0;}
+
+}
+export class CommandError extends VT52Error {
+    constructor(cmd) {
+        super("VT52 CMD ERROR");
+        this._cmd = cmd.toString(16);
+    }
+    get cmd() {return this._cmd;}
+    get type() {return VT52_ERROR_CMD;}
+    toString() {
+        return this.message + "\n" + this.cmd;
     }
 
 }

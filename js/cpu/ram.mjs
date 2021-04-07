@@ -1,5 +1,5 @@
 /*jshint esversion:6*/
-import {Symbols} from './symbol.mjs';
+import {Constant, Symbols} from './symbol.mjs';
 import {Hexer16} from './common.mjs';
 import {Operation} from './op.mjs';
 import { Register,Reporter,Flag,CPU } from './cpu.mjs';
@@ -7,11 +7,13 @@ export class Memory extends Reporter{
     constructor(size) {
         super("RAM");
         this._size = size || 0xFFFF;
-        this._data = new Array((this._size-4)).fill(0);
+        this._data = new Uint16Array(this.size-4).fill(0,this.size-4,0)
+        //this._data = new Array((this._size-4)).fill(0);
         this._protected = [0,0,0,0];
         this._volatile = 0;
         this._opStart =0;
         this._reserved = 0;
+        this._io_buffers = 0;
         this._lock = false;
         this._cpu = null;
         this._latest = {
@@ -32,10 +34,23 @@ export class Memory extends Reporter{
     get size() {return this._size;}
     get opStart() {return this._opStart;}
     get reserved() {return this._reserved;}
+    get ioBuffers() {return this._io_buffers;}
+    getIoBufferAddress(id) {Symbol.resolve("IO_" + id).value;}
     process(ops) {
         this._lock = false;
         this._volatile = Symbols.map_constants(0);
+
+
+        let reserveIOBuffers = Symbols.resolve("reserve_io_buffers");
+
+
+        if (reserveIOBuffers && reserveIOBuffers.constant) {
+            this._io_buffers = reserveIOBuffers.raw;
+            this._volatile = Symbols.map_io_buffers(reserveIOBuffers.raw,this._volatile);
+
+        }
         this._lock = true;
+        this._volatile += this.ioBuffers*200;
         this._volatile = Symbols.map_buffers(this._volatile);
         this._opStart=Symbols.map_dynamic(this._volatile);
         let reserve = Symbols.resolve("reserve_mutable");
@@ -43,6 +58,7 @@ export class Memory extends Reporter{
             this._reserved = reserve.raw;
             this._opStart+=this.reserved;
         }
+
         Register.I.value = this._opStart;
         for (let i = 0; i < ops.length;i++) {
             //console.log("Writing op: " + ops[i].pp());
@@ -63,7 +79,7 @@ export class Memory extends Reporter{
     /*
     * Protected memory
     */
-    
+    iobuffer(addr) {return this._data.subarray(addr, addr+200);}
     r(addr) {return this._data[addr];}
     w(addr,v) {
         this._latest.addr = addr;

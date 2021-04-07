@@ -10,21 +10,17 @@ body {
 .wrap.file > table {
     width:100%;
 }
+.wrap > table>tbody>tr > td > a:link {
+    color:white;
+}
 .wrap {
-    
-    margin-top:0px;
-    height:720px;
+    margin:0px;
+    height:320px;
     overflow-y: scroll;
-    
-    //color:#FFF;
     color: #A9B7C6;
-    //background-color:#313335;
     background-color:#212225;
     font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
     font-variant-ligatures: none;
-}
-.wrap > table>tbody>tr > td > a:link {
-    color:white;
 }
 .wrap > table {
     color: #A9B7C6;
@@ -58,6 +54,24 @@ body {
 .ultralight {
     background-color: #A9B7C6;
     color:#313335;
+}
+.ultra-btn {
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-variant-ligatures: none;
+    width:auto;
+    color: #A9B7C6;
+    text-align: center;
+    padding: 4px 10px;
+    text-decoration: none;
+    border:1px solid #FFF;
+    background-color:#313335;
+    border-radius: 5px;
+    display:inline-block;
+    margin:10px;
+}
+a.ultra-btn:hover{
+    color:#313335;
+    background-color: #A9B7C6;
 }
 .screen {
     font-family: monospace;
@@ -104,6 +118,7 @@ body {
 .CodeMirror-regPanel {
     height: fit-content;
     vertical-align: top;
+    margin-top:10px;
 }
 .CodeMirror-buttonsPanel input {
     font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;

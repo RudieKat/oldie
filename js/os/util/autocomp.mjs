@@ -46,7 +46,7 @@ class TTYOUt extends TTYFilter {
         this._marks.length = 0;
     }
     get tokenized() {
-        if (this._tokens.length == 0) {
+        if (this._tokens.length === 0) {
             return 0;
         }
         return this._tokens.length + this._tokens.map(t => t.length).reduce((a,b) => 0 + (a||0) + (b||0));
@@ -103,7 +103,7 @@ class TTYOUt extends TTYFilter {
                         return;
                     case 32:
                         
-                        if (this._tokens.length == 0) {
+                        if (this._tokens.length === 0) {
                             this._tokens.push(this._chars.join(""));
                         } else {
                             let off = this._tokens.length + this._tokens.map(t => t.length).reduce((a,b) => 0 + a + b);
@@ -255,7 +255,7 @@ export class TTYTrap extends TTYBoundProcess {
                 this._search_index = this._buffer.length;
                 this._results = [];
                 if (this._cmd == null) {
-                    this._results = this._commands.filter(n => this._buffer.length == 0 || n.indexOf(this._buffer)==0);
+                    this._results = this._commands.filter(n => this._buffer.length === 0 || n.indexOf(this._buffer)===0);
                     if (this._results.length > 0) {
                         this._buffer = this._results[0];
                         this.out.rewind_all().filter(this._buffer);

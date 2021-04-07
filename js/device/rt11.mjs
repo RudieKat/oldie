@@ -1,6 +1,7 @@
 /*jshint esversion:6*/
 
 import {RS232} from './rs232.mjs';
+import {io_ex, primaryBlock, RS323ModemDevice, RS323TerminalDevice} from "../io/io2.mjs";
 
 //import * as fs from 'fs;
 
@@ -30,18 +31,32 @@ export class RT11 extends RS232 {
     constructor(rate,transmit_flag) {
         super(rate,transmit_flag);
         this._data = null;
+        this._fs_in = new RS323ModemDevice(9600,10);
+        this._fs_in.getInputType = ()=>{return primaryBlock};
+        this._fs_out = new RS323TerminalDevice(9600,10);
+        this._fs_out.getOutputType = ()=>{return primaryBlock};
+
+
+        io_ex.register(this._fs_in);
+        io_ex.register(this._fs_out);
         
         if (fs.existsSync(__dirname + "/../../data/device/___rt11")) {
             this._data = fs.readFileSync(__dirname + "/../../data/device/___rt11");
+
         } else {
             this._data = new Uint8Array(1024*512);
             fs.writeFileSync(__dirname + "/../../data/device/___rt11",this._data);
             this._data = fs.readFileSync(__dirname + "/../../data/device/___rt11");
         }
+        this._data.writeUInt8 = (i,v) => {
+            this[i] = v;
+        }
         this._ft = new RT11FileTable(this);
         
         
     }
+    get readio() {return this._fs_out;}
+    get writeio() {return this._fs_in;}
     list() {
         return this._ft.files;
     }
@@ -119,9 +134,13 @@ class RT11FileTable {
     constructor(disk) {
         this._disk = disk;
         this._ft = this.disk.read_bytes(0,16*RT11_BLOCK);
+        this._ft = new Uint8ClampedArray(this._ft);
+        this._ft.writeUInt8 = (i,v)=> {
+            this[i] = v;
+        }
         console.log(this.ft[0].toString(16) + ", " + (this.ft[1]<<8).toString(16) + " " + this.ft[2]);
         console.log(this.disk.read_byte(2));
-        if (this.ft[0] != 0xFE || this.disk.read_word(1)==0) {
+        if (this.ft[0] !== 0xFE || this.disk.read_word(1)===0) {
             console.log("Initializing disk");
             //disk is uninitialized
             let ft = this._ft;

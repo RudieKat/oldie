@@ -105,6 +105,11 @@ export class IOFile extends Symbol {
         }
         return this._data[this._position++];
     }
+    getBytes(v) {
+        v = Math.min(this._data.length-(this.position+v),v);
+        this._position+=v;
+        return this._data.slice(this._position-v, this.position);
+    }
     read() {
         return this.next();
     }
@@ -143,22 +148,33 @@ export class DiskIO extends RS323TerminalDevice {
         this._file.load();
     }
     get file() {return this._file;}
+    set file(f) {return this._file=f;}
     get size() {return this._size;}
     get open() {return this._open;}
     get read() {return this._read;}
     get write() {return this._write;}
-    close() {
+    closeFile() {
         this.open._value = 0;
+        if (this.connected) {
+            this.disconnect();
+        }
+    }
+
+    openFile() {
+        this.open._value(1);
+
     }
     loaded(sizeInBytes) {
         this.size._value = sizeInBytes;
         this.read.src = this.file;
-        this.connect = Register.IN.stream.connection;
-        this.connect.modem._buffer = this.file._data;
+        //this.connect = Register.IN.stream
+        if (this.terminal) {
+            this.connection.writeWords(this.file.getBytes(this.connection.writeable))
+        }
         //this.stream(this.file);
         this.open._value = 1;
 
-    }x
+    }
 }
 class SymbolTable {
     constructor() {
@@ -202,6 +218,19 @@ class SymbolTable {
     get constants() {return this._symbols.filter(s => s.constant);}
     map_constants(memAdd) {
         this.constants.forEach(s => s.address = memAdd++);
+        return memAdd;
+    }
+    map_io_buffers(count, memAdd) {
+        let buffers = this._symbols.filter(c => c.name.indexOf("IO_")=== 0);
+        buffers.forEach(b => {
+            this._smap.delete(b.name);
+        })
+
+        for (let i = 0; i < count;i++) {
+            let c = new Constant("IO_" + i, memAdd + (count - i) + 200 * i);
+            let ca = new Symbol("IO_" + i + "_available",0);
+            c.address = memAdd++;
+        }
         return memAdd;
     }
     map_buffers(memAdd) {
