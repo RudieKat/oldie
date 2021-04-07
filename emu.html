@@ -164,7 +164,7 @@
 
             cpu.process();
             //parse(window.editor.getValue().trim());
-            window.has_stack = Symbols.resolve("stack_top") !== null;
+            window.has_stack = Symbols.resolve("stack_top") !== undefined;
             let stack = document.getElementById("stack");
             while(stack.hasChildNodes()) {
                 stack.removeChild(stack.lastChild);
@@ -222,6 +222,9 @@
                 if (memPos === next) {
                     window.editor.addLineClass(i,"wrap","ultralight");
                     window.editor.addLineClass(i,"gutter","ultralight");
+                    let t = window.editor.charCoords({line: i, ch: 0}, "local").top;
+                    let middleHeight = window.editor.getScrollerElement().offsetHeight / 2;
+                    window.editor.scrollTo(null, t - middleHeight - 5);
                 }
                 
             }
@@ -232,7 +235,7 @@
                 ll.innerText = Hexer16(addr) + " " + Hexer16(Memory.read(addr));
             });*/
             
-            document.getElementById("register-r").innerText = "R: " + Hexer16(Register.R.value);
+            document.getElementById("register-r").innerText =  Hexer16(Register.R.value);
             
         }
         window.init = () => {
@@ -628,6 +631,13 @@
     ; back it's probably more useful to use Run slow or to step but I haven't
     ; bothered figuring out how to get CodeMirror to scroll to the current
     ; line yet so that will require you to do some scrolling. Or a lot of it.
+    ; UPDATE: Ok fine, I fixed it. General commentary to follow but basically
+    ; this would typically be an "import" if you will that basically turns
+    ; a very sparse 4 instruction set into a far more capable one. While it's
+    ; not immediately obvious the ioex passes the R value to the screen but more
+    ; importantly, it allows for direct writes to a memory mapped block device
+    ; of the type found in the computers that were state of the art back then.
+    ; But more on that in a browser near you soon.
     .data
     	.truejmp 0
         .falsejmp 0
