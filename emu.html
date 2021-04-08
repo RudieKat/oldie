@@ -278,7 +278,12 @@
                             r.appendChild(tdc);
                             examples.appendChild(r);
                         });
-
+                        let h = window.location.hash;
+                        if (h !== null && h !== undefined && exampleFiles.map(f => f.name).indexOf(h.substring(1))>=0) {
+                            setTimeout(()=> {
+                                window.loadExampleFile(h.substring(1));
+                            },50);
+                        }
 
                     }
                 } catch(e) {
