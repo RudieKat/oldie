@@ -26,7 +26,7 @@ body {
     color: #A9B7C6;
     background-color:#313335;
     
-    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-family:  VT323,Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
 }
 .wrap>table>thead {
     background-color:#212225;
@@ -76,6 +76,7 @@ a.ultra-btn:hover{
 .screen {
     font-family: monospace;
     font-size:20px;
+    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
     font-variant-ligatures: none;
     background-color: #282828;
     background-color: black;
