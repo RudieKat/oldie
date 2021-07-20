@@ -74,16 +74,15 @@ a.ultra-btn:hover{
     background-color: #A9B7C6;
 }
 .screen {
-    font-family: monospace;
     font-size:20px;
-    font-family:  Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    font-family:  'VT323',monospace;
     font-variant-ligatures: none;
-    background-color: #282828;
+    /*background-color: #282828;*/
     background-color: black;
     background-image: radial-gradient(
         rgba(0, 40, 0, 0.75), black 120%
     );
-    color: #66ff66;
+    /*color: #66ff66;*/
     color:#A9B7C6;
     /*height:24em;
     width:33em;*/
